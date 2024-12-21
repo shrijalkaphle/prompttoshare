@@ -86,13 +86,13 @@ mail = Mail(app)
 
 # AWS S3 configuration
 BUCKET_NAME = 'ai-interf-social'
-AWS_ACCESS_KEY_ID = 'AKIARQFQUHJED7N5LPHF'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = '###############'
+AWS_SECRET_ACCESS_KEY = '###############'
 
 
 from dotenv import load_dotenv 
 load_dotenv()
-openai.api_key = "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"
+openai.api_key = "###############"
 model_engine = 'text-davinci-003'
 
 # Set the max number of characters per chunk

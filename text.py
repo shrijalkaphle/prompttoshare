@@ -6,7 +6,7 @@ import sseclient
 app = Flask(__name__)
 
  
-API_KEY = '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'
+API_KEY = '############################'
 
 
 def performRequestWithStreaming():

@@ -5,8 +5,8 @@ import boto3
 
 
 BUCKET_NAME = 'ai-interf-social'
-AWS_ACCESS_KEY_ID = 'AKIARQFQUHJED7N5LPHF'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = '########################################'
+AWS_SECRET_ACCESS_KEY = '########################################'
 
 def uploadUserProfile(image):
     

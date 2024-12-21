@@ -156,16 +156,16 @@ mail = Mail(app)
 BUCKET_NAME = 'ai-interf-social'
 TEMP_BUCKET_NAME = 'aiinterf-temp-file'
 
-AWS_ACCESS_KEY_ID = 'AKIARQFQUHJED7N5LPHF'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = '###############'
+AWS_SECRET_ACCESS_KEY = '###############'
 
 
 from dotenv import load_dotenv 
 load_dotenv()
 openaiClient=OpenAI(
-    api_key="sk-proj-###############################"
+    api_key="###############################"
 )
-# openai.api_key = "sk-proj-###############################"
+# openai.api_key = "###############################"
 model_engine = 'gpt-3.5-turbo'
 
 # Set the max number of characters per chunk
@@ -434,7 +434,7 @@ def checkoutSession():
 
 
     amount = request.form.get('price')
-    stripe.api_key = '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'
+    stripe.api_key = '########################################'
 
     user_id = session['user_id']
 

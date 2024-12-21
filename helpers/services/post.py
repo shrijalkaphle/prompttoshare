@@ -14,8 +14,8 @@ from helpers.level import calculateLevel
 from ..db import fetchAll, fetchOne, execute
 
 BUCKET_NAME = 'ai-interf-social'
-AWS_ACCESS_KEY_ID = 'AKIARQFQUHJED7N5LPHF'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = '#########################'
+AWS_SECRET_ACCESS_KEY = '#########################'
 
 def fetchAllPostByAdmin(perPage = 20, page = 1):
     offset = (page - 1) * perPage

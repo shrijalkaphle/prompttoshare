@@ -9,7 +9,7 @@ from helpers.db import execute, fetchAll, fetchOne
 from helpers.task import base64_to_img, make_mask_image 
 
 openaiClient=OpenAI(
-    api_key="sk-proj-############"
+    api_key="########################"
 )
 MAX_CHARS_PER_CHUNK = 500
 MODEL_ENGINE = 'gpt-3.5-turbo'

@@ -4,7 +4,7 @@ import stripe
 
 from helpers.db import execute, fetchAll, fetchOne
 
-STRIPE_SECRET_KEY = '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'
+STRIPE_SECRET_KEY = '########################################'
 
 def createPaymentIntent(amount, userId):
     user = fetchOne('SELECT * FROM user WHERE user_id = ' + str(userId))

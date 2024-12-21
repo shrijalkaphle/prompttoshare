@@ -1,7 +1,7 @@
 import openai
 import json
 
-openai.api_key = "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"
+openai.api_key = "#########################"
 
 model_engine = 'text-davinci-002'
 
