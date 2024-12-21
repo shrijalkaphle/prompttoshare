@@ -87,7 +87,7 @@ mail = Mail(app)
 # AWS S3 configuration
 BUCKET_NAME = 'ai-interf-social'
 AWS_ACCESS_KEY_ID = '###############'
-AWS_SECRET_ACCESS_KEY = '###############'
+AWS_SECRET_ACCESS_KEY = $SECRET_ACCESS_KEY
 
 
 from dotenv import load_dotenv 
