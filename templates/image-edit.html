@@ -1,0 +1,1119 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- fontawesome -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- bootstrap -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="static/fonts/icomoon/style.css"> -->
+
+
+    <title>NewsFeed</title>
+
+    <style>
+        /* CSS for the image container */
+
+
+.download-link {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    margin-top: 5px;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.download-link:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+        .bg-gray {
+            background-color: #f0f2f5;
+        }
+
+        .fs-0 {
+            font-size: 4rem;
+        }
+
+        .fs-7 {
+            font-size: 0.8rem;
+        }
+
+        /* nav button */
+        .nav__btn button:hover {
+            background: #f0f2f5 !important;
+        }
+
+        .nav__btn button:hover i {
+            color: #0d6efd !important;
+        }
+
+        .nav__btn-active i {
+            color: #0d6efd !important;
+        }
+
+        .nav__btn-active {
+            position: relative;
+        }
+
+        .nav__btn-active:before {
+            content: "";
+            position: absolute;
+            bottom: -4.5px;
+            left: 0;
+            transform: translate(0, 4.5px);
+            width: 100%;
+            height: 3px;
+            border-bottom: 3px solid #0d6efd !important;
+        }
+
+        /* dropdown */
+        .dropdown-item:hover {
+            background-color: rgba(225, 225, 225, 0.1) !important;
+        }
+
+        .dropdown-item:active {
+            background-color: #d5d5d5 !important;
+        }
+
+        /* chat box */
+        .modal-content:hover .fa-phone-alt {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-video {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-file-image {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-plus-circle {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-portrait {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-adjust {
+            color: #0d6efd !important;
+        }
+
+        .modal-content:hover .fa-thumbs-up {
+            color: #0d6efd !important;
+        }
+
+        /* edit */
+        .edit-button {
+            opacity: 0;
+        }
+
+        .edit-button:hover {
+            opacity: 1;
+        }
+
+        .edit-heading:hover .edit-button {
+            opacity: 1;
+        }
+
+        /* scrollbar */
+        .scrollbar:hover {
+            overflow: auto !important;
+        }
+
+        /* sponsor */
+        .sponsor-icon {
+            opacity: 0;
+        }
+
+        .dropdown-item:hover .sponsor-icon {
+            opacity: 1;
+        }
+
+        /* popover */
+        .pop-avatar {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .chat-box {
+            border: 0 !important;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+
+        /* stories */
+        .story:hover {
+            opacity: 0.8;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
+        /* comment */
+        .post__comment .accordion-button::after {
+            margin-left: 0 !important;
+            display: none !important;
+        }
+
+        .post__comment .accordion-button:hover {
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+
+        .post__comment .accordion-button:not(.collapsed) {
+            background: transparent !important;
+        }
+
+        .post__comment .accordion-button:not(.collapsed) {
+            box-shadow: none !important;
+        }
+
+        @media (min-width: 62em) {
+            footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        }
+
+
+        p {
+            color: #fff !important;
+        }
+
+
+
+
+
+        .accordion-item {
+            background: transparent !important;
+            border: 1px solid #eee;
+        }
+
+        .accordion-button {
+            background: transparent !important;
+            height: 20px;
+        }
+
+        .accordion-button:hover {
+            border: 1px solid #eee !important;
+            border-radius: 25px !important;
+        }
+
+        .accordion-button:not(:hover) {
+            border: none !important;
+        }
+
+
+        .form-control:disabled,
+        .form-control[readonly] {
+            background: transparent;
+        }
+
+        .right-menu-icon {
+            background-color: transparent;
+        }
+
+        .burger-menu-content {
+            background-color: #1f2029;
+        }
+
+        .modal-content {
+            background-color: #1f2029;
+        }
+
+        .modal-content textarea {
+            background-color: rgba(225, 225, 225, 0.1);
+        }
+
+        /*.modal-content select
+{
+  background-color: transparent;
+  backdrop-filter: blur(50px);
+  color: #fff!important;
+}*/
+
+        .form-select option {
+            color: #000 !important;
+        }
+
+        select.form-select,
+        select.form-select option {
+            background-color: rgba(225, 225, 225, 0.1);
+            color: #fff;
+            border: none;
+        }
+
+
+
+        select::after {
+            color: #fff;
+            background-color: #fff;
+        }
+
+        .modal-content input {
+            background: rgb(225, 225, 225, 0.1);
+            color: #000 !important;
+            width: 100%;
+        }
+
+        .btn-close {
+            color: #fff !important;
+            background-color: #fff !important;
+        }
+
+        #top-tab .nav-tabs,
+        #add-tab .nav-tabs {
+            border: none;
+        }
+
+        #top-tabs .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.active {
+            color: #f3f3f3;
+            background-color: transparent;
+            font-weight: bold;
+            border-bottom: 4px solid !important;
+            border: none;
+            transform: none !important;
+
+
+        }
+
+
+        #top-tabs .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.hover {
+            border: none;
+        }
+
+        #top-tabs .nav-tabs .nav-link,
+        #add-tab .nav-tabs .nav-link {
+            color: #eee;
+            font-size: 20px;
+            transform: none !important;
+
+        }
+
+
+        #top-tab li,
+        #add-tab li {
+            padding: 0 10px;
+        }
+
+        #top-tab li a,
+        #add-tab li a {
+            color: #fff;
+        }
+
+
+        @media (max-width: 767px) {
+            #top-tab .nav-tabs {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                scroll-snap-type: x mandatory !important;
+                -ms-scroll-snap-type: mandatory !important;
+                scroll-behavior: smooth !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+
+
+            #top-tab .nav-tabs .nav-item {
+                flex: 0 0 auto !important;
+                width: 60% !important;
+            }
+
+            #top-tab li {
+                padding: 0;
+                font-size: 18px;
+            }
+
+
+
+        }
+
+        .delete-tab {
+            background-color: #1f2029;
+
+            padding: 0;
+        }
+
+        .delete-tab:hover {
+            background-color: rgba(225, 225, 225, 0.1);
+        }
+
+
+        .delete-tab button {
+            color: #fff;
+            text-align: center;
+            padding-top: 10px;
+            font-size: 16px;
+
+        }
+
+        .delete-tab button:hover {
+            color: #fff;
+            background-color: transparent;
+        }
+
+
+
+
+        .icon-tab {
+            margin-top: 30px;
+
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .icon-tab span.glyphicon {
+            display: block;
+            font-size: 35px;
+
+            color: #8d98b8;
+
+            margin: 0px auto;
+            line-height: 65px;
+
+            transition-duration: 0.25s;
+        }
+
+        .icon-tab span.glyphicon::before {
+            padding: 2px 6.5px;
+            border-radius: 80%;
+        }
+
+
+        .icon-tab.active span.glyphicon {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .icon-tab.active span.glyphicon::before {
+            padding: 15px 19.5px;
+            border-radius: 100%;
+
+            transition-duration: 0.4s;
+        }
+
+        .icon-tab.active span.glyphicon::before {
+            background: linear-gradient(to bottom right, #24C6DC, #514A9D);
+        }
+
+
+        .icon-label {
+            color: #b3b3b3;
+            font-size: 16px;
+
+            transition-duration: 0.35s;
+        }
+
+
+        .icon-tab.active .icon-label,
+        .icon-tab:hover .icon-label {
+            color: black;
+        }
+
+        .icon-tab:hover span.glyphicon {
+            margin-bottom: 10px;
+        }
+
+
+        .item {
+            margin-top: 50px;
+        }
+
+
+        @media (max-width:767px) {
+            .icon-tab {}
+
+            .icon-tab span {
+                display: inline !important;
+                vertical-align: middle;
+            }
+
+            .icon-tab.active span.glyphicon {
+                padding-right: 10px;
+            }
+
+            .icon-tab:hover span.glyphicon {
+                padding-right: 10px;
+                transition-duration: 0.25s;
+            }
+        }
+
+
+
+        .user-data .card {
+            width: 100%;
+            background: rgb(225, 225, 225, 0.1);
+            border: none;
+            cursor: pointer;
+            transition: all 0.5s;
+            border-radius: 25px;
+            padding: 30px 20px 10px 20px;
+
+        }
+
+
+
+        .user-data .name {
+            font-size: 22px;
+            font-weight: bold
+        }
+
+        .user-data .idd {
+            font-size: 14px;
+            font-weight: 600
+        }
+
+
+        .user-data .btn1 {
+            padding-top: 10px;
+            height: 40px;
+            width: 150px;
+            border: none;
+            color: #aeaeae;
+            font-size: 20px
+        }
+
+        .text span {
+            font-size: 13px;
+            color: #545454;
+            font-weight: 500
+        }
+
+
+        .user-data i {
+            font-size: 40px;
+        }
+
+        .user-data span {
+            color: #0FFFE2;
+        }
+
+
+        .left-icon i {
+            font-size: 26px;
+            text-align: center;
+        }
+
+        .left-icon h1 {
+            font-size: 12px;
+            color: #0FFFE2;
+        }
+
+        .left-icon p {
+            font-size: 15px;
+            color: #0FFFE2;
+        }
+
+
+        .sponsor-ad,
+        .notice,
+        .info {
+            background: rgb(225, 225, 225, 0.1);
+            width: 90%;
+            border-radius: 25px;
+        }
+
+
+
+
+        .post-bg {
+            /*  background: transparent!important;
+  backdrop-filter: blur(50px);*/
+            background: rgb(225, 225, 225, 0.1);
+            margin: 15px 0;
+            border-radius: 25px !important;
+        }
+
+        .create-post {
+            background: rgb(225, 225, 225, 0.1);
+            margin: 15px 0;
+            border-radius: 25px !important;
+        }
+
+
+
+        .read {
+            font-weight: normal;
+            background-color: rgba(255, 255, 255, .1) !important;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, .1);
+        }
+
+
+        .header-feed {
+            font-family: 'Dancing Script', cursive;
+            font-size: 25px;
+            padding: 50px 0;
+
+        }
+
+        .notify {
+            position: relative;
+        }
+
+        .notify span {
+            position: absolute;
+            top: 0;
+            right: -5px;
+            border-radius: 50%;
+            padding: 5px;
+            background-color: red;
+            color: white;
+            font-size: 10px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container h5 {
+            margin-right: 10px;
+            /* Adjust this value as needed */
+        }
+
+        #radioSearch {
+            border: none;
+            /* Remove the default border */
+            border-bottom: 1px solid #fff;
+            /* Add an underline */
+            background-color: transparent;
+            /* Make the background transparent */
+            padding: 4px;
+            /* Add some padding for better appearance */
+            outline: none;
+            /* Remove the outline on focus */
+            width: 200px;
+            /* Adjust the width as needed */
+            color: #fff;
+            /* Set text color to black (optional) */
+            font-size: 14px;
+            /* Adjust the font size as needed */
+        }
+
+        .show-mobile,
+        .icon-mobile,
+        .tab-show-mobile {
+            display: none;
+        }
+
+
+
+
+        @media (max-width:1000px) {
+
+            .show-mobile,
+            .tab-show-mobile,
+            .icon-mobile {
+                display: inline-block;
+            }
+
+            .tab-hide-mobile {
+                display: none;
+            }
+
+
+        }
+
+        .section-gap {
+            margin-top: 65px;
+        }
+
+        .timeline {
+            padding-top: 56px;
+            max-width: 680px;
+        }
+
+        .timeline-generate {
+            padding-top: 20px;
+        }
+
+        @media (max-width:1000px) {
+            .timeline {
+                padding-top: 50px;
+            }
+
+
+            .timeline-generate {
+                padding-top: 100px;
+            }
+
+
+        }
+
+        .comment-text {
+            background-color: rgba(225, 225, 222, 0.1);
+        }
+    </style>
+</head>
+
+
+<body class="postion-relative">
+
+
+
+
+
+    <!-- ================= Timeline ================= -->
+    <div class="col-12 col-lg-6 pb-5 timeline">
+        <div class="d-flex flex-column justify-content-center w-100 mx-auto">
+
+            <!-- create post -->
+            <div class="p-3 mt-5 shadow create-post">
+                <!-- avatar -->
+                <div class="d-flex" type="button">
+                    <div class="p-1">
+
+                        <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                            class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+
+                    </div>
+
+                    <input type="text" class="form-control rounded-pill border-0 pointer" readonly placeholder="Click"
+                        data-bs-toggle="modal" data-bs-target="#createModal" />
+
+                </div>
+                <!-- create modal -->
+                <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                    aria-hidden="true" data-bs-backdrop="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- head -->
+                            <div class="modal-header align-items-center">
+                                <h5 class="text-white text-center w-100 m-0" id="exampleModalLabel">
+                                    Create Post
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <!-- body -->
+                            <form action="#" method="POST" enctype="multipart/form-data">
+                                <!------------------create post form start--------------------->
+
+                                <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                                <input type="hidden" name="category" value="extra">
+                                <div class="modal-body">
+                                    <div class="my-1 p-1">
+                                        <div class="d-flex flex-column">
+                                            <!-- name -->
+                                            <div class="d-flex align-items-center">
+                                                <div class="p-2">
+
+                                                    <img src="https://source.unsplash.com/collection/happy-people"
+                                                        alt="avatar" class="rounded-circle me-2"
+                                                        style="width: 38px; height: 38px; object-fit: cover" />
+
+
+                                                </div>
+
+                                                <div class="d-flex" id="add-tab">
+                                                    <p class="m-0 fw-bold">Username </a></p>
+
+                                                    <ul class="nav nav-tabs justify-content-end" id="myTabs"
+                                                        role="tablist">
+
+                                                        <li class="nav-item">
+                                                            <a class="active" id="text-tab" data-bs-toggle="tab"
+                                                                href="#text" role="tab" aria-controls="text"
+                                                                aria-selected="true"><i
+                                                                    class="fa-solid fa-camera"></i></a>
+                                                        </li>
+
+                                                        <li class="nav-item">
+                                                            <a id="image-tab" data-bs-toggle="tab" href="#image"
+                                                                role="tab" aria-controls="image"
+                                                                aria-selected="false"><i
+                                                                    class="fa-solid fa-images"></i></a>
+                                                        </li>
+
+                                                        <li class="nav-item">
+                                                            <a id="image-tab" data-bs-toggle="tab" href="#video"
+                                                                role="tab" aria-controls="video"
+                                                                aria-selected="false"><i
+                                                                    class="fa-solid fa-video-slash"></i></a>
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- text -->
+                                            <div class="tab-content">
+
+                                                 <div class="tab-pane fade show active" id="text" role="tabpanel"
+                                                    aria-labelledby="text-tab">
+
+                                                    <div>
+                                                        <div>
+                                                            <video class="w-100" id="cameraFeed" autoplay></video>
+
+                                                            <div class="bnb-viewer__controls">
+                                                                <div
+                                                                    class="p-2 bnb-viewer__controls-dock d-flex justify-content-around">
+                                                                    <div class="pl-4 pr-4 text-white border p-1 rounded btn-takescreenshot"
+                                                                        style="cursor: pointer;">
+                                                                        <i class="fa fa-light fa-camera"></i>
+                                                                    </div>
+                                                                    <div class="pl-4 pr-4 text-white border p-1 rounded btn-unmount"
+                                                                        style="cursor: pointer;">
+                                                                        <i class="fa fa-light fa-circle-xmark"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                                <div class="tab-pane fade" id="image" role="tabpanel"
+                                                    aria-labelledby="image-tab">
+
+                                                    <div>
+
+                                                        <div class="grey-box fs-5 text-success pointer text-center pt-5"
+                                                            id="uploadIcon"
+                                                            style="width: 100%; height: 130px; background-color: rgba(225, 225, 225, 0.1);">
+                                                            <input id="imageInput" type="file"
+                                                                aria-label="Upload your image here.">
+                                                            <!-- <p id="fileLabel">Upload your image here..</p> -->
+                                                        </div>
+                                                        <input type="file" name="file" accept="image/*" id="fileInput"
+                                                            style="display: none;">
+
+                                                    </div>
+                                                </div>
+                                                <!------tab image end----->
+
+                                                <canvas class="w-100 py-2" id="photoCanvas"
+                                                    style="display: none;"></canvas>
+
+                                                <!------tab video end----->
+                                                <!-- emoji  -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between
+                                      align-items-center
+                                      my-3
+                                      ">
+                                                    <select class="form-select" name="tool"
+                                                        aria-label="Default select example">
+                                                        <option selected value="DALL-E">DALL-E</option>
+                                                        <option value="Craiyon">Craiyon</option>
+                                                        <option value="Midjourney">Midjourney</option>
+                                                    </select>
+                                                    <i class="fa-solid fa-images text-white"></i>
+
+                                                </div>
+
+                                                <!-- options -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between                          
+                                      rounded
+                                      mt-3
+                                      ">
+                                                    <input type="text" name="paste_prompt"
+                                                        placeholder="Paste your prompt here"
+                                                        class="form-control border-0 text-prompt">
+
+                                                </div>
+
+                                                <div class="btn btn-generate social-button w-100 text-white">
+                                                    Generate button
+                                                    <span class="isloading spinner-border spinner-border-sm"
+                                                        role="status" aria-hidden="true" style="display: none;"></span>
+                                                </div>
+
+                                                <div class="generated-image">
+                                                </div>
+
+
+                                            </div>
+                                            <!------tab content end----->
+
+                                        </div>
+                                    </div>
+                                    <!-- end -->
+                                </div>
+                                <!-- footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn social-button w-100 text-white">
+                                        Post
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-------------create form end------------->
+                </div>
+                <hr />
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+    </div>
+    </div>
+    </div>
+
+    </div>
+    <!-- Add this script to the bottom of your HTML template -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous">
+    </script>
+
+    <!-- <script src="static/script.js"></script> -->
+    <script>
+        $(function () {
+            var $cameraFeed = $('#cameraFeed');
+            var $captureButton = $('.btn-takescreenshot');
+            var $closeButton = $('.btn-unmount');
+            var $photoCanvas = $('#photoCanvas');
+            var photoContext = $photoCanvas[0].getContext('2d');
+            var $generateButton = $('.btn-generate');
+            var $textPrompt = $('.text-prompt');
+            var cameraStream = null;
+            var originalImgData = null;
+            var maskImgData = null;
+
+            // $photoCanvas.hide();
+
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(function (stream) {
+                    cameraStream = stream;
+                    $cameraFeed[0].srcObject = cameraStream;
+                })
+                .catch(function (error) {
+                    console.error('Error accessing camera:', error);
+                });
+
+            $captureButton.click(function () {
+                if (!cameraStream) {
+                    return;
+                }
+
+                $photoCanvas[0].width = $cameraFeed[0].videoWidth;
+                $photoCanvas[0].height = $cameraFeed[0].videoHeight;
+
+                photoContext.drawImage($cameraFeed[0], 0, 0, $photoCanvas[0].width, $photoCanvas[0]
+                    .height);
+
+                var link = document.createElement('a');
+                link.href = $photoCanvas[0].toDataURL('image/png');
+                link.download = 'photo.png';
+                link.click();
+
+                originalImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+                $photoCanvas.show();
+            });
+
+            $closeButton.click(function () {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(function (track) {
+                        track.stop();
+                    });
+                    cameraStream = null;
+                }
+
+                $('#cameraContainer').hide();
+            });
+
+            $generateButton.click(function () {
+                $('.isloading').show();
+
+                maskImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+
+                // var link = document.createElement('a');
+                // link.href = $photoCanvas[0].toDataURL('image/png');
+                // link.download = 'photo.png';
+                // link.click();
+                // return;
+                $.ajax({
+                    url: "/api/generate/",
+                    type: 'POST',
+                    data: {
+                        prompt: $textPrompt.val(),
+                        image: originalImgData,
+                        mask: maskImgData,
+                        csrf_token: '{{ csrf_token() }}' 
+                    }, // Replace with your actual data
+                    // contentType: 'multipart/form-data',
+           
+                    success: function (data) {
+                        console.log('Success:', data);
+
+                        let loadedCount = 0;
+
+                        // Iterate over the first 4 URLs in the data.data array
+                        for (let i = 0; i < 4 && i < data.data.length; i++) {
+
+                            // Create an image element
+                            var imgElement = $("<img class='w-25' />");
+
+                            // Store the image URL as a data attribute
+                            imgElement.data('image-url', data.data[i].url);
+
+                            // Display the image URL as text
+                            var urlText = $("<p>").text("Image URL: " + data.data[i].url);
+                            
+                            // Create a download link
+                            var downloadLink = $("<a>")
+                                .text("Download")
+                                .attr('href', '/api/download/' + (i + 1))
+                                .attr('download', 'generated_image_' + (i + 1) + '.png');
+         
+                            // Attach a load event listener to the image
+                            imgElement.on('load', function () {
+                                console.log('Image is loaded and rendered!');
+
+                                // Increase the loadedCount by 1 for every loaded image
+                                loadedCount++;
+
+                                // If all 4 images have loaded
+                                if (loadedCount === 4) {
+                                    $('.isloading')
+                                .hide(); // hide loading indicator
+                                }
+                            });
+
+                            // Set the image source (starts loading the image)
+                            imgElement.attr('src', data.data[i].url);
+
+                     
+
+                           // Append the image and download link to the target element
+                            $('.generated-image').append(imgElement);
+                            $('.generated-image').append(downloadLink);
+                                                             
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        $('.isloading').hide();
+                    }
+                });
+
+            })
+
+            // Handle input element change event
+            $('#imageInput').change(function (event) {
+                $photoCanvas.show();
+
+                var file = event.target.files[0];
+                if (file) {
+                    var img = new Image();
+                    img.onload = function () {
+                        // Draw the selected image onto the canvas
+                        $photoCanvas[0].width = img.width;
+                        $photoCanvas[0].height = img.height;
+                        photoContext.drawImage(img, 0, 0);
+                        originalImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+                    };
+                    img.src = URL.createObjectURL(file);
+                }
+            });
+
+            function clearCanvas() {
+                $photoCanvas[0].getContext('2d').clearRect(0, 0, $photoCanvas[0].width, $photoCanvas[0].height);
+            }
+
+            //in computer
+            var mouseDown = false;
+
+            $photoCanvas.on('mousedown', function () {
+                mouseDown = true;
+            }).on('mouseup', function () {
+                mouseDown = false;
+            }).on('mousemove', function (event) {
+                if (mouseDown) {
+                    var cursorSize = 15; // Adjust as needed
+                    var x = event.offsetX * $photoCanvas[0].width / $photoCanvas[0].clientWidth;
+                    var y = event.offsetY * $photoCanvas[0].height / $photoCanvas[0].clientHeight;
+
+                    // Draw a transparent rectangle at the cursor position
+                    photoContext.clearRect(x - cursorSize / 2, y - cursorSize / 2, cursorSize,
+                        cursorSize);
+                }
+            });
+
+            //in mobile
+            $photoCanvas.on('touchstart', function (event) {
+                mouseDown = true;
+            }).on('touchend', function (event) {
+                mouseDown = false;
+            }).on('touchmove', function (event) {
+                event.preventDefault(); // Prevent default touch behavior
+
+                if (mouseDown) {
+                    var cursorSize = 10; // Adjust as needed
+                    var touch = event.touches[0]; // Get the first touch
+
+                    // Calculate the touch position relative to the canvas
+                    var canvasRect = $photoCanvas[0];
+                    var x = (touch.clientX - canvasRect.getBoundingClientRect().left) * canvasRect
+                        .width / canvasRect.clientWidth;
+                    var y = (touch.clientY - canvasRect.getBoundingClientRect().top) * canvasRect
+                        .height / canvasRect.clientHeight;
+
+                    // Draw a transparent rectangle at the touch position
+                    photoContext.clearRect(x - cursorSize / 2, y - cursorSize / 2, cursorSize,
+                        cursorSize);
+                }
+            });
+
+
+            // Handle input element change event
+            $('#imageInput').change(function (event) {
+                clearCanvas(); // Clear canvas before drawing the selected image
+
+                // ... Your existing code for drawing the selected image ...
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

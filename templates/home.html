@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- Bootstrap CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+   <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+
+   <link rel="stylesheet" href="static/style.css">
+   <link rel="stylesheet" href="static/feed.css">
+   <link rel="stylesheet" href="static/home.css">
+
+
+   <title>Home Page</title>
+
+
+</head>
+
+<body>
+
+
+   {% with messages = get_flashed_messages(with_categories=true) %}
+   {% for category, message in messages %}
+   {% if category == 'success' %}
+   <div class="alert alert-success" role="alert" id="success-alert">
+      {{ message }}
+   </div>
+   {% elif category == 'error' %}
+   <div class="alert alert-danger" role="alert" id="error-alert">
+      {{ message }}
+   </div>
+   {% endif %}
+   {% endfor %}
+   {% endwith %}
+
+   <!-- 
+      <div class="col-12 text-center" style="border-bottom: 2px solid rgba(225, 225, 225, 0.1);">
+         <img src="../static/logo.png" width="40" height="40" style="object-fit: contain;">
+       <h1 style="color: #0FFFE2; margin-bottom: 0;"> P2S </h1>
+      </div> -->
+
+   <div class="container mt-4">
+
+
+
+      <div class="row">
+
+
+
+         <div class="col-lg-7 col-md-12 col-12 order-lg-1 order-md-2 order-2 home-feed">
+            <div class="d-flex flex-column justify-content-center w-100 mx-auto" style="max-width: 680px">
+
+
+               <div class="col d-flex justify-content-center" id="top-tab">
+                  <ul class="nav justify-content-center" id="myTabs" role="tablist">
+                     <li class="nav-item">
+                        <a class="nav-link active" id="feed-tab" data-bs-toggle="tab" href="#feed" role="tab"
+                           aria-controls="feed" aria-selected="true"><i class="fas fa-home"></i></a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="insta-tab" data-bs-toggle="tab" href="#insta" role="tab"
+                           aria-controls="insta" aria-selected="false"><i class="fab fa-instagram"></i></a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="fb-tab" data-bs-toggle="tab" href="#fb" role="tab" aria-controls="fb"
+                           aria-selected="false"><i class="fa-solid fa-play"></i></a>
+                     </li>
+
+                  </ul>
+               </div>
+               <div class="tab-content">
+                  <div class="tab-pane fade show active" id="feed" role="tabpanel" aria-labelledby="feed-tab">
+                     <!--------------------------------feed posts -------------------------------------->
+                     <!-- p 1 -->
+                     {% if post %}
+                     {% for data in post %}
+                     <div class="p-4 rounded shadow mt-3m post-bg">
+                        <!-- author -->
+                        <div class="d-flex justify-content-between">
+                           <!-- avatar -->
+                           <div class="d-flex">
+                              {% if data.profile %}
+                              <img src="{{data.profile}}" alt="avatar" class="rounded-circle me-2"
+                                 style="width: 38px; height: 38px; object-fit: cover" />
+                              {% else %}
+                              <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                 class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                              {% endif %}
+                              <div>
+                                 <p class="m-0 fw-bold">{{data.name}}
+                                    {% if data.tool %}
+                                    <span>({{ data.tool }})</span>
+                                    {% endif %}
+                                 </p>
+                                 <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                              </div>
+                           </div>
+                        </div>
+                        <!----------------------------post content----------------------------------->
+                        <div class="my-3">
+                           <!-- content -->
+                           <div>
+                              {% if data.file %}
+                              {% if data.file.endswith('.mp4') %}
+                              <video controls="controls" preload="preload" class="img-fluid rounded"
+                                 style="width: 100%">
+                                 <source src="{{ data.file }}#t=0.001" type="video/mp4">
+                                 Your browser does not support the video tag.
+                              </video>
+                              {% else %}
+                              <img src="{{ data.file }}" alt="post image" class="img-fluid rounded img-upload"
+                                 style="width: 100%">
+                              {% endif %}
+                              {% endif %}
+                              {% for c in data.chunk %}
+                              <p>{{ c }}</p>
+                              {% endfor %}
+                           </div>
+                           <!--close-->
+                           <div>
+                           </div>
+                           <!-- likes & comments -->
+                           <div class="post__comment mt-3 position-relative">
+                              <div class="
+                                             d-flex
+                                             align-items-center
+                                             top-0
+                                             start-0
+                                             position-absolute
+                                             " style="height: 50px; z-index: 5">
+                                 <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                              </div>
+                              <!-- comments start-->
+                              <div class="accordion" id="accordion{{ data.id }}">
+                                 <div class="accordion-item border-0">
+                                    <div class="d-flex justify-content-around count">
+                                       <a href="/login" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                          <!-- 
+                                                         <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                         <p class="m-0">Like</p> -->
+                                       </a>
+                                       <a href="/login" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                       </a>
+                                       <div class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted
+                                                      p-1
+                                                      " data-bs-toggle="collapse"
+                                          data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                          aria-controls="collapsePost{{data.id}}">
+                                          <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Comments">
+                                             {{data.comment_count}}</i>
+                                       </div>
+                                    </div>
+                                    <!-- comment expand -->
+                                    <div id="collapsePost{{data.id}}" class="accordion-collapse collapse"
+                                       aria-labelledby="heading{{data.id}}" data-bs-parent="#accordion{{data.id}}">
+                                       <hr />
+                                       <div class="accordion-body">
+                                          <!-- comment 1 -->
+                                          {% for c in comment %}
+                                          {% if c.post_id == data.id %}
+                                          <div class="d-flex align-items-center my-1">
+                                             <!-- avatar -->
+                                             <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                                class="rounded-circle me-2" style="
+                                                            width: 38px;
+                                                            height: 38px;
+                                                            object-fit: cover;
+                                                            " />
+                                             <!-- comment text -->
+                                             <div class="p-3 rounded comment__input w-100">
+                                                <!-- comment menu of author -->
+                                                <div class="d-flex justify-content-end">
+                                                   <i class="fas fa-ellipsis-h text-blue pointer"
+                                                      id="post1CommentMenuButton" data-bs-toggle="dropdown"
+                                                      aria-expanded="false"></i>
+                                                   <ul class="dropdown-menu border-0 shadow"
+                                                      aria-labelledby="post1CommentMenuButton">
+                                                      <li class="d-flex align-items-center">
+                                                         <a class="
+                                                                        dropdown-item
+                                                                        d-flex
+                                                                        justify-content-around
+                                                                        align-items-center
+                                                                        fs-7
+                                                                        " href="#">
+                                                            Edit Comment</a>
+                                                      </li>
+                                                      <li class="d-flex align-items-center">
+                                                         <a class="
+                                                                        dropdown-item
+                                                                        d-flex
+                                                                        justify-content-around
+                                                                        align-items-center
+                                                                        fs-7
+                                                                        " href="#">
+                                                            Delete Comment</a>
+                                                      </li>
+                                                   </ul>
+                                                </div>
+                                                <p class="fw-bold m-0">{{ c.name }}</a></p>
+                                                <p class="m-0 fs-7 p-2 rounded">
+                                                   {{ c.text }}
+                                                </p>
+                                             </div>
+                                          </div>
+                                          {% endif %}
+                                          {% endfor %}
+                                          <!-- create comment -->
+                                          <form id="comment-form" class="d-flex my-1" method="POST"
+                                             action="{{ url_for('create_comment', post_id=data.id) }}">
+                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                             <!-- avatar -->
+                                             <div>
+                                                <img src="https://source.unsplash.com/collection/happy-people"
+                                                   alt="avatar" class="rounded-circle me-2" style="
+                                                               width: 38px;
+                                                               height: 38px;
+                                                               object-fit: cover;
+                                                               " />
+                                             </div>
+                                             <!-- input -->
+                                             <input type="text" name='text' class="form-control border-0 rounded-pill "
+                                                placeholder="Write a comment" />
+                                             <button type="submit" class="btn btn-primary">Add</button>
+                                          </form>
+                                          <!-- end -->
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- end -->
+                           </div>
+                        </div>
+                     </div>
+                     {% endfor %}
+                     {% endif %}
+                  </div>
+                  <!-----end tab-pane feed--->
+                  <div class="tab-pane fade" id="insta" role="tabpanel" aria-labelledby="insta-tab">
+                     <!--------------------------------insta posts -------------------------------------->
+                     <!-- p 1 -->
+                     {% if post %}
+                     {% for data in post %}
+                     {% if data.category == 'extra' and data.file and not data.file.endswith('.mp4') %}
+                     <div class="p-4 rounded shadow mt-3m post-bg">
+                        <!-- author -->
+                        <div class="d-flex justify-content-between">
+                           <!-- avatar -->
+                           <div class="d-flex">
+                              {% if data.profile %}
+                              <img src="{{data.profile}}" alt="avatar" class="rounded-circle me-2"
+                                 style="width: 38px; height: 38px; object-fit: cover" />
+                              {% else %}
+                              <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                 class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                              {% endif %}
+                              <div>
+                                 <p class="m-0 fw-bold">{{data.name}}
+                                    {% if data.tool %}
+                                    <span>({{ data.tool }})</span>
+                                    {% endif %}
+                                 </p>
+                                 <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                              </div>
+                           </div>
+                        </div>
+                        <!----------------------------post content----------------------------------->
+                        <div class="my-3">
+                           <!-- content -->
+                           <div>
+                              {% if data.file %}
+                              <img src="{{ data.file }}" alt="post image" class="img-fluid rounded img-upload" />
+                              {% endif %}
+                              {% for c in data.chunk %}
+                              <p>{{ c }}</p>
+                              {% endfor %}
+                           </div>
+                           <!--close-->
+                           <!-- likes & comments -->
+                           <div class="post__comment mt-3 position-relative">
+                              <div class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          " style="height: 50px; z-index: 5">
+                                 <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                              </div>
+                              <!-- comments start-->
+                              <div class="accordion" id="accordion{{ data.id }}">
+                                 <div class="accordion-item border-0">
+                                    <!-- comment & like bar -->
+                                    <div class="d-flex justify-content-around">
+                                       <a href="/login" class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                          <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                       </a>
+                                       <a href="/login" class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                       </a>
+                                       <div class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   " data-bs-toggle="collapse"
+                                          data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                          aria-controls="collapsePost{{data.id}}">
+                                          <i class="fas fa-comment-alt me-3">{{data.comment_count}}</i>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- end -->
+                           </div>
+                        </div>
+                     </div>
+                     {% endif %}
+                     {% endfor %}
+                     {% endif %}
+                  </div>
+                  <!-----end tab-pane insta--->
+                  <div class="tab-pane fade" id="fb" role="tabpanel" aria-labelledby="fb-tab">
+                     <!--------------------------------fb posts -------------------------------------->
+                     <!-- p 1 -->
+                     {% if post %}
+                     {% for data in post %}
+                     {% if data.category == 'extra' and data.file and data.file.endswith('.mp4') %}
+                     <div class="p-4 rounded shadow mt-3m post-bg">
+                        <!-- author -->
+                        <div class="d-flex justify-content-between">
+                           <!-- avatar -->
+                           <div class="d-flex">
+                              {% if data.profile %}
+                              <img src="{{data.profile}}" alt="avatar" class="rounded-circle me-2"
+                                 style="width: 38px; height: 38px; object-fit: cover" />
+                              {% else %}
+                              <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                 class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                              {% endif %}
+                              <div>
+                                 <a href="#">
+                                    <p class="m-0 fw-bold">{{ data.name }}
+                                       {% if data.tool %}
+                                       <span>({{ data.tool }})</span>
+                                       {% endif %}
+                                    </p>
+                                 </a>
+                                 <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                              </div>
+                           </div>
+                        </div>
+                        <!----------------------------post content----------------------------------->
+                        <div class="my-3">
+                           <!-- content -->
+                           <div>
+                              {% if data.file %}
+                              {% if data.file.endswith('.mp4') %}
+                              <video controls="controls" preload="preload" class="img-fluid rounded"
+                                 style="width: 100%">
+                                 <source src="{{ data.file }}#t=0.001" type="video/mp4">
+                                 Your browser does not support the video tag.
+                              </video>
+
+                              {% endif %}
+                              {% endif %}
+                              {% for c in data.chunk %}
+                              <p>{{ c }}</p>
+                              {% endfor %}
+                           </div>
+                           <!--close-->
+                           <!-- likes & comments -->
+                           <div class="post__comment mt-3 position-relative">
+                              <div class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          " style="height: 50px; z-index: 5">
+                                 <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                              </div>
+                              <!-- comments start-->
+                              <div class="accordion" id="accordion{{ data.id }}">
+                                 <div class="accordion-item border-0">
+                                    <div class="d-flex justify-content-around count">
+                                       <a href="/login" class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   ">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                          <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                       </a>
+                                       <a href="/login" class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted">
+                                          <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                          <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                       </a>
+                                       <div class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   " data-bs-toggle="collapse"
+                                          data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                          aria-controls="collapsePost{{data.id}}">
+                                          <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" data-bs-original-title="Comments">
+                                             {{data.comment_count}}</i>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- end -->
+                           </div>
+                        </div>
+                     </div>
+                     {% endif %}
+                     {% endfor %}
+                     {% endif %}
+                  </div>
+                  <!-----end tab-pane fb--->
+
+               </div>
+               <!---end tab-contain--->
+            </div>
+
+
+         </div>
+
+
+
+         <div class="col-lg-5 col-md-12 col-12 order-lg-2 order-md-1 order-1">
+
+            <!--   <div class="row top-arrow">
+        <div class="col-4">
+          <div class="arrow arrow-right"><span>PROMPT</span></div>
+        </div>
+
+         <div class="col-4">
+          <div class="arrow arrow-right"><span>SHARE</span></div>
+        </div>
+
+         <div class="col-4">
+          <div class="arrow arrow-right"><span>EARN</span></div>
+        </div>
+      </div> -->
+
+
+
+
+
+            <div class="row justify-content-center top-arrow mb-1">
+               <div class="col-12 text-center">
+                  <p>WHAT YOU CAN DO...</p>
+               </div>
+
+               <div class="col-2 text-center">
+                  <i class="fa-solid fa-flask"></i>
+                  <h2>Prompt</h2>
+               </div>
+
+               <div class="col-2 text-center">
+                  <i class="fa-regular fa-paper-plane"></i>
+                  <h2>Share</h2>
+               </div>
+
+
+               <div class="col-2 text-center">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <h2>Search</h2>
+               </div>
+
+               <div class="col-2 text-center">
+                  <i class="fa-solid fa-coins"></i>
+                  <h2>Earn</h2>
+               </div>
+
+            </div>
+
+            <div class="section user-form">
+               <div class="container" id="form-container">
+                  <div class="card">
+
+                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+                        <li class="nav-item text-center">
+                           <a class="nav-link btr" id="pills-profile-tab" data-bs-toggle="pill"
+                              href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">SIGN
+                              UP</a>
+                        </li>
+
+                        <li class="nav-item text-center">
+                           <a class="nav-link active btl" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home"
+                              role="tab" aria-controls="pills-home" aria-selected="true">LOG IN</a>
+                        </li>
+
+                     </ul>
+
+                     <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                           <div class="form px-4 pt-5 text-center">
+                              <form action="{{url_for('login')}}" method="post">
+                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                                 <div class="form-group">
+                                    <input type="email" name="email" class="form-style" placeholder="Your Email"
+                                       id="email" autocomplete="off">
+                                    <i class="input-icon fa-regular fa-envelope" style="color: #15aa98;"></i>
+                                 </div>
+                                 <div class="form-group mt-2">
+                                    <input type="password" name="password" class="form-style"
+                                       placeholder="Your Password" id="password" autocomplete="off">
+                                    <i class="input-icon fa-solid fa-lock" style="color: #15aa98;"></i>
+                                 </div>
+
+                                 <p class="mt-3"><a href="{{ url_for('forgot') }}">Forgot Password</a></p>
+
+
+                                 <button type="submit" class="btn mt-4">Sign In</button>
+
+                                 <!--                      <p class="my-3">-OR-</p>
+
+                          <a href="{{ url_for('google_login') }}">
+                        <div class="google-btn">
+                        <div class="google-icon-wrapper">
+                          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                        </div>
+                        <p class="btn-text"><b>Sign in with google</b></p>
+                      </div>
+                      </a> -->
+                              </form>
+                           </div>
+
+
+
+                        </div>
+                        <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                           aria-labelledby="pills-profile-tab">
+
+
+                           <div class="form px-4 text-center">
+                              <form action="{{url_for('register')}}" method="post">
+                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                 <input type="hidden" name="token_balance" value="100" />
+                                 <div class="form-group">
+                                    <input type="text" name="name" class="form-style" placeholder="Your Full Name"
+                                       id="name" autocomplete="off">
+                                    <i class="input-icon fa-regular fa-user" style="color: #15aa98;"></i>
+                                 </div>
+                                 <div class="form-group mt-2">
+                                    <input type="email" name="email" class="form-style" placeholder="Your Email"
+                                       id="email" autocomplete="off">
+                                    <i class="input-icon fa-regular fa-envelope" style="color: #15aa98;"></i>
+                                 </div>
+                                 <div class="form-group mt-2">
+                                    <input type="password" name="password" class="form-style"
+                                       placeholder="Your Password" id="password" autocomplete="off">
+                                    <i class="input-icon fa-solid fa-lock" style="color: #15aa98;"></i>
+                                 </div>
+
+                                 <div class="form-group mt-2">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1"
+                                       required="required">
+                                    <label class="form-check-label" for="exampleCheck1"><span>I agree to<a
+                                             href="/terms"> Terms And Conditions.</a></span></label>
+                                 </div>
+
+
+
+                                 <button type="submit" class="btn mt-4">Sign Up</button>
+
+                                 <!--                        <p class="my-3">-OR-</p>
+                    
+                      <a href="{{ url_for('google_login') }}">
+                        <div class="google-btn">
+                        <div class="google-icon-wrapper">
+                          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                        </div>
+                        <p class="btn-text"><b>Sign in with google</b></p>
+                      </div>
+                      </a> -->
+
+                              </form>
+
+                           </div>
+
+
+
+                        </div>
+
+                     </div>
+
+
+
+
+                  </div>
+               </div>
+            </div>
+
+         </div>
+
+      </div><!-----------end row ---------------->
+
+   </div><!-----------end container----------->
+
+
+
+   <!-- 
+
+    <div class="row justify-content-center suggest">
+
+
+      <div class="col-md-5 col-10">
+          <h1 class='text-white text-center'> Prompt. Share. Earn!</h1>
+
+          <a href="{{ url_for('login')}}" class="active"><span class="suggestion">LogIn</span></a>
+
+          <a href="{{ url_for('register')}}" class="active"><span class="suggestion">Register</span></a>
+
+                 {% if session['loggedin'] %}
+
+             <a href="{{ url_for('feed')}}"><span class="suggestion">Feed</span></a>
+
+             {% else %}
+             
+              <a href="{{ url_for('newsfeed')}}"><span class="suggestion">Feed</span></a>
+
+              {% endif %}
+
+                  <a href="{{ url_for('studentDashboard')}}"><span class="suggestion">Personalize Education</span></a>
+
+     
+      </div>
+
+    </div> -->
+
+
+
+
+
+   <!-- Optional JavaScript; choose one of the two! -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+   <!-- Option 1: Bootstrap Bundle with Popper -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+
+
+   <script src="static/script.js"></script>
+
+
+
+
+
+</body>
+
+</html>

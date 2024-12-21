@@ -1,0 +1,2769 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="csrf-token" content="{{ csrf_token() }}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <!-- bootstrap -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+   <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+   <!-- main style -->
+   <link rel="stylesheet" href="../static/style.css">
+   <link rel="stylesheet" href="../static/feed.css">
+   <title>Profile</title>
+   <style type="text/css">
+      .main-body {
+         margin-top: 50px;
+      }
+
+      .order-card {
+         color: #fff;
+         background-color: rgba(225, 225, 225, 0.1);
+      }
+
+      /*          .bg-c-blue {
+         background: linear-gradient(45deg,#4099ff,#73b4ff);
+         }
+         .bg-c-green {
+         background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+         }
+         .bg-c-yellow {
+         background: linear-gradient(45deg,#FFB64D,#ffcb80);
+         }
+         .bg-c-pink {
+         background: linear-gradient(45deg,#FF5370,#ff869a);
+         }*/
+      .card {
+         background-color: rgba(225, 225, 225, 0.1);
+         border-radius: 25px;
+         -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+         box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+         border: none;
+         margin-bottom: 30px;
+         color: #fff;
+         -webkit-transition: all 0.3s ease-in-out;
+         transition: all 0.3s ease-in-out;
+         position: relative;
+         width: 100%;
+      }
+
+      .button-container {
+         position: absolute;
+         bottom: 10px;
+         /* Adjust this value to control the vertical distance from the bottom */
+         right: 10px;
+         /* Adjust this value to control the horizontal distance from the right */
+      }
+
+      .card .card-block {
+         padding: 20px;
+
+      }
+
+      .order-card i {
+         font-size: 26px;
+      }
+
+      .f-left {
+         float: left;
+      }
+
+      .f-right {
+         float: right;
+      }
+
+      .profile-btn {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+      }
+
+      .rating-container {
+         font-size: 24px;
+         cursor: pointer;
+      }
+
+      .rating-container label {
+         color: #ccc;
+         transition: color 0.3s ease;
+      }
+
+      .rating-container label:hover {
+         color: goldenrod;
+      }
+
+      .rating-container label.active {
+         color: goldenrod;
+      }
+
+      /* CSS for golden stars */
+      .rating-stars {
+         color: goldenrod;
+         display: inline-block;
+      }
+
+      /* CSS for half-star */
+      .fas.fa-star-half-alt:before {
+         content: '\f089';
+      }
+
+      .modal-btn {
+         background-color: #fff;
+         color: #000;
+      }
+
+      .modal-btn:hover {
+         background-color: #0FFFE2;
+      }
+
+      .modal-content {
+         background-color: #1f2029;
+      }
+
+      .modal-content .form-control {
+         padding: 13px 20px;
+         height: 48px;
+         width: 100%;
+         font-weight: 500;
+         border-radius: 4px;
+         font-size: 14px;
+         line-height: 22px;
+         letter-spacing: 0.5px;
+         outline: none;
+         color: #c4c3ca;
+         background-color: rgba(225, 225, 225, 0.2);
+         border: none;
+         -webkit-transition: all 200ms linear;
+         transition: all 200ms linear;
+         box-shadow: 0 4px 8px 0 rgba(21, 21, 21, .2);
+      }
+
+      .btn-close {
+         background-color: #fff !important;
+      }
+
+      .profile-stats {
+         height: 90vh;
+         overflow: auto;
+      }
+
+      .no-mobile {
+         display: inline-block;
+      }
+
+      @media only screen and (max-width: 1024px) {
+
+         .profile-stats {
+            height: auto;
+         }
+
+         .no-mobile {
+            display: none;
+         }
+
+      }
+   </style>
+</head>
+
+<body style="height: 100vh; overflow: hidden;">
+   <div class="messages-and-navbar-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+      {% if category == 'success' %}
+      <div class="alert alert-success" role="alert" id="success-alert">
+         {{ message }}
+      </div>
+      {% elif category == 'error' %}
+      <div class="alert alert-danger" role="alert" id="error-alert">
+         {{ message }}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endwith %}
+
+
+      <div class="spin" id="spinner" style="display: none;"></div>
+
+      <!-- ================= Appbar ================= -->
+      <div class="d-flex align-items-center fixed-top shadow"
+         style="min-height: 30px; z-index: 5; background-color: #1f2029;">
+         <div class="container-fluid">
+            <div class="row align-items-center">
+               <!-- search -->
+               <div class="col align-items-center mt-2 nav-search">
+                  <form class="d-none d-md-none d-lg-flex align-items-center">
+                     <div class="input-group">
+                        <input type="text" class="form-control border-0" id="myInput" onkeyup="myFunction()"
+                           placeholder="Search">
+                        <ul id="myUL" style="display: none;"></ul>
+                        <!--          <button type="submit" class="input-group-text border-0" style="background-color: rgba(225, 225, 225, 0.1);">
+                              <i class="fa-solid fa-magnifying-glass text-white"></i>
+                              </button> -->
+                     </div>
+                  </form>
+                  <ul class="col justify-content-start text-left d-flex d-md-none"
+                     style="list-style: none; padding-left: -10px!important; margin-left: -10px!important;">
+                     <li class="col-4">
+                        <i class="fas fa-solid fa-medal text-white"><span
+                              style="padding-left: 5px">{{total_likes}}</span></i>
+                     </li>
+                     <li class="col-4">
+                        <i class="fas fa-solid fa-trophy text-white"><span
+                              style="padding-left: 5px">{{total_trophies}}</span></i>
+                     </li>
+                  </ul>
+               </div>
+               <!-- nav -->
+               <div class="col d-none d-md-flex justify-content-center" id="top-tab">
+                  <ul class="d-flex justify-content-between text-center pt-3" style="list-style: none">
+                     <li class="col-6 px-4">
+                        <i class="fas fa-solid fa-medal text-white"><span
+                              style="padding-left: 5px">{{total_likes}}</span></i>
+                        <p>Reward</p>
+                     </li>
+                     <li class="col-6 px-4">
+                        <i class="fas fa-solid fa-trophy text-white"><span
+                              style="padding-left: 5px">{{total_trophies}}</span></i>
+                        <p>Trophy</p>
+                     </li>
+                  </ul>
+               </div>
+               <!-- menus -->
+               <div class="col d-flex align-items-center justify-content-end my-3 my-md-0">
+                  <i class="fas fa-search" class="openBtn" onclick="openSearch()"></i>
+                  <div
+                     class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2 notify"
+                     style="width: 38px; height: 38px" type="button" id="notMenu" data-bs-toggle="dropdown"
+                     aria-expanded="false" data-bs-auto-close="outside">
+                     <i class="fas fa-bell" id="markAllRead"><span id="notificationCount">{{ notification_count
+                           }}</span></i>
+                  </div>
+                  <!-- notifications dd -->
+                  <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="notMenu"
+                     style="width: 100%; max-width: 23em; max-height: 400px; overflow-y: auto;">
+                     <!-- header -->
+                     <li class="p-1">
+                        <div class="d-flex justify-content-between">
+                           <h2 class="text-white">Notifications</h2>
+                        </div>
+                     </li>
+                     <!-- news 5 -->
+                     <li class="my-2 p-1">
+                        <a href="#"
+                           class="d-flex align-items-center justify-content-evenly text-decoration-none text-white">
+                           <div class="d-flex align-items-center justify-content-evenly">
+                              <div>
+                                 {% for notification in notifications %}
+
+                                 <div class="d-flex align-items-center">
+                                    <div class="p-2">
+                                       {% if notification.profile %}
+                                       <img src="{{ notification.profile }}" alt="avatar" class="rounded-circle"
+                                          style="width: 58px; height: 58px; object-fit: cover" />
+                                       {% else %}
+                                       <img src="https://source.unsplash.com/random/5" alt="avatar"
+                                          class="rounded-circle" style="width: 58px; height: 58px; object-fit: cover" />
+                                       {% endif %}
+                                    </div>
+                                    <div>
+                                       {% if notification.is_read == '1' %}
+                                       <div class="read">
+                                          <p class="m-0">{{ notification.message }}</p>
+                                          <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                                       </div>
+                                       {% else %}
+                                       <div>
+                                          <p class="m-0">{{ notification.message }}</p>
+                                          <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                                       </div>
+                                       {% endif %}
+                                    </div>
+                                 </div>
+                        </a>
+                        <hr>
+                        {% endfor %}
+               </div>
+            </div>
+
+            </li>
+            </ul>
+            <!-- secondary menu -->
+            <div class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2"
+               style="width: 38px; height: 38px" type="button" id="secondMenu" data-bs-toggle="dropdown"
+               aria-expanded="false" data-bs-auto-close="outside">
+               <i class="fas fa-caret-down"></i>
+            </div>
+            <!-- secondary menu dd -->
+            <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="secondMenu"
+               style="width: 100%; max-width: 23em;">
+               <!-- avatar -->
+               <li class="dropdown-item p-1 rounded d-flex" type="button">
+                  {% if user.profile %}
+                  <img src="{{ user.profile }}" alt="avatar" class="rounded-circle me-2"
+                     style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+                  {% else %}
+                  <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                     class="rounded-circle me-2"
+                     style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+                  {% endif %}
+                  <div>
+                     <a href="../profile/{{ session['user_id']}}">
+                        <p class="m-0">{{ current_user['name']}} </p>
+                     </a>
+                     <a href="../profile/{{ session['user_id']}}">
+                        <p class="m-0 text-muted">See your profile</p>
+                     </a>
+                  </div>
+               </li>
+               <hr />
+               <!-- feedback fas fa-exclamation-circle -->
+               {% if session['user_id'] == 1 %}
+               <a href="/ai-interf-social-admin">
+                  <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                     <i class="fa fa-pen text-white p-2 rounded-circle"></i>
+                     <div class="ms-3">
+                        <p class="m-0">Admin</p>
+                     </div>
+                  </li>
+               </a>
+               {% endif %}
+               <a href="/feed">
+                  <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                     <i class="fa fa-home text-white p-2 rounded-circle"></i>
+                     <div class="ms-3">
+                        <p class="m-0">Home</p>
+                     </div>
+                  </li>
+               </a>
+
+               <a href="/order">
+                  <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                     <i class="fa-solid fa-money-bill text-white p-2 rounded-circle"></i>
+                     <div class="ms-3">
+                        <p class="m-0">Billing</p>
+                     </div>
+                  </li>
+               </a>
+
+               <a href="/guide">
+                  <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                     <i class="fa-solid fa-circle-info text-white p-2 rounded-circle"></i>
+                     <div class="ms-3">
+                        <p class="m-0">Guide</p>
+                     </div>
+                  </li>
+               </a>
+               <div class="show-mobile">
+                  <a href="/followed_users">
+                     <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                        <i class="fa fa-users text-white p-2 rounded-circle"></i>
+                        <div class="ms-3">
+                           <p class="m-0">Circle</p>
+                           <p class="m-0 text-muted fs-7">Check who you have followed</p>
+                        </div>
+                     </li>
+                  </a>
+                  <!-- <a href="/tokenbuy">
+                     <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                        <i class="fa fa-coins text-white p-2 rounded-circle"></i>
+                        <div class="ms-3">
+                           <p class="m-0">Purchase Coin</p>
+                           <p class="m-0 text-muted fs-7">Buy token to give rewards</p>
+                        </div>
+                     </li>
+                  </a> -->
+                  <hr />
+               </div>
+               <!-- options -->
+               <li class="dropdown-item p-1 my-3 rounded" type="button">
+                  <ul class="navbar-nav">
+                     <li class="nav-item">
+                        <a href="{{ url_for('logout')}}" class="d-flex text-decoration-none text-white">
+                           <i class="fas fa-cog p-2 rounded-circle"></i>
+                           <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                              <p class="m-0">Log Out</p>
+                           </div>
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+            <!-- end -->
+         </div>
+      </div>
+      <!-----end row----->
+      <div id="myOverlay" class="overlay">
+         <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
+         <div class="overlay-content">
+            <form class="d-flex align-items-center">
+               <div class="input-group">
+                  <input type="text" class="form-control border-0" id="moInput" onkeyup="myFunction1()"
+                     placeholder="Search">
+                  <ul id="myMO" style="display: none;"></ul>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+   </div>
+   </div>
+   <div class="container-fluid">
+      <div class="main-body">
+         <div class="row gutters-sm justify-content-between">
+            <div class="col-lg-3 col-md-12 col-12 my-5 profile-stats">
+               <div class="card">
+                  <div class="card-body mt-5 mt-md-0">
+                     <div class="d-flex flex-column align-items-center text-center">
+                        {% if user.profile %}
+                        <img src="{{ user.profile }}" alt="Profile Picture" class="rounded-circle" width="150"
+                           height="150">
+                        {% else %}
+                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle"
+                           width="150" height="150">
+                        {% endif %}
+                        <div class="mt-3">
+                           <h4>{{user.name}}</h4>
+                           <p class="text-secondary mb-1">
+                              {% if user.user_id in user_categories[0]|map(attribute='user_id') %}
+                           <p><strong>Level: </strong>0</p>
+                           {% endif %}
+                           {% if user.user_id in user_categories[1]|map(attribute='user_id') %}
+                           <p><strong>Level: </strong>1</p>
+                           {% endif %}
+                           {% if user.user_id in user_categories[10]|map(attribute='user_id') %}
+                           <p><strong>Level: </strong>10</p>
+                           {% endif %}
+                           {% for percentile in range(2, 10) %}
+                           {% for rank_user in user_categories[percentile] %}
+                           {% if rank_user.user_id == user.user_id %}
+                           <p><strong>Level: </strong>{{ percentile }}th</p>
+                           {% endif %}
+                           {% endfor %}
+                           {% endfor %}
+
+                           </p>
+                           {% if not own_profile %}
+                           <p>Page Views: {{ count }}</p>
+                           {% endif %}
+                           <div id="average-rating">
+                              {% if average_rating %}
+                              <div class="rating-stars">
+                                 {% for i in range(5) %}
+                                 {% if i < average_rating %} {% if i + 1> average_rating %}
+                                    <i class="fas fa-star-half-alt"></i> <!-- Half golden star icon -->
+                                    {% else %}
+                                    <i class="fas fa-star"></i> <!-- Full golden star icon -->
+                                    {% endif %}
+                                    {% else %}
+                                    <i class="far fa-star"></i> <!-- Empty golden star icon -->
+                                    {% endif %}
+                                    {% endfor %}
+                                    ({{ average_rating }})
+                              </div>
+                              {% else %}
+                              <p>No ratings yet.</p>
+                              <div class="rating-stars">
+                                 {% for _ in range(5) %}
+                                 <i class="far fa-star"></i> <!-- Empty golden star icon -->
+                                 {% endfor %}
+                              </div>
+                              {% endif %}
+                           </div>
+                           {% if not own_profile and not has_rated and has_given_trophies %}
+                           {% if profile_rating_remaining > 0 %}
+                           <h3>Rate this profile:</h3>
+                           <form action="{{ url_for('submit_rating', profile_id=user.user_id) }}" method="post"
+                              id="rating-form">
+                              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                              <div class="rating-container">
+                                 <label for="star1">&#9733;</label>
+                                 <label for="star2">&#9733;</label>
+                                 <label for="star3">&#9733;</label>
+                                 <label for="star4">&#9733;</label>
+                                 <label for="star5">&#9733;</label>
+                                 <input type="hidden" name="rating_value" value="" id="rating-value">
+                              </div>
+                           </form>
+                           {% else %}
+                           <strong>Maximum rating per day reached. Try again tommorow.</strong>
+                           {% endif %}
+                           {% else %}
+                           <span style="font-size: 12px;">(give trophy to user post to rate)</span>
+                           {% endif %}
+                           <div class="profile-btn mt-3">
+                              <!--       <a href="/feed" class="btn modal-btn mx-2">Back to newsfeed</a> -->
+                              {% if session['user_id'] == user.user_id %}
+                              <!-- Image upload form -->
+                              <a href="{{ url_for('edit', user_id=user.user_id) }}" class="btn modal-btn mx-2">Edit
+                                 Profile</a>
+                              <a href="#" class="btn modal-btn"
+                                 onclick="confirmDelete('{{ url_for('delete_profile', user_id=user.user_id) }}', {{ user.user_id }})">Delete
+                                 Account</a>
+
+                              <a href="#" class="btn btn-sm modal-btn ml-2 d-flex d-md-flex d-lg-none"
+                                 data-bs-toggle="modal" data-bs-target="#stats"><i class="fa-solid fa-eye"></i></a>
+
+                              {% endif %}
+
+
+                              {% if session['user_id'] != user.user_id %}
+                              {% if is_following %}
+                              <form action="{{ url_for('unfollow', user_id=user.user_id) }}" method="POST">
+                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                 <button class="btn modal-btn text-white" type="submit">Unfollow</button>
+                              </form>
+                              <a href="/feed" class="btn modal-btn mx-2">Back to Feed</a>
+                              {% else %}
+                              <form action="{{ url_for('follow', user_id=user.user_id) }}" method="POST">
+                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                 <button class="btn modal-btn text-white" type="submit">Follow</button>
+                              </form>
+                              <a href="/feed" class="btn modal-btn mx-2">Back to Feed</a>
+                              {% endif %}
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- see stats -->
+               <div class="modal fade" id="stats" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <!-- Add your modal form content here -->
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="exampleModalLabel">View your stats here</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                           <div class="row">
+
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-blue order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Reward given</h6>
+                                       <!--          <i class="fa fa-cart-plus f-left"></i> -->
+                                       <h2 class="text-right"><span>{{like_count}}</span></h2>
+                                       <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-green order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Trophy given</h6>
+                                       <h2 class="text-right"><span>{{trophy_count}}</span></h2>
+                                       <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-yellow order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Your History</h6>
+                                       <h2 class="text-right"><span>{{history_count}}</span></h2>
+                                       <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% if session['user_id'] == user.user_id %}
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-pink order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Token balance</h6>
+                                       <h2 class="text-right"><span>{{user.token_balance}}</span></h2>
+                                       <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-pink order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Reward received</h6>
+                                       <h2 class="text-right"><span>{{total_likes}} ({{total_likes_cost}})</span></h2>
+                                       <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6 col-md-6 col-12">
+                                 <div class="card bg-c-yellow order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Trophy received</h6>
+                                       <h2 class="text-right"><span>{{total_trophies}} ({{total_trophies_cost}})</span>
+                                       </h2>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div class="col-lg-12 col-md-6 col-12">
+                                 <div class="card bg-c-yellow order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Total price </h6>
+                                       <h2 class="text-right"><span>{{total_price_cents}}</span></h2>
+                                       <!-- Add the button inside the card -->
+                                       <div class="button-container">
+                                          {% if total_price_cents >= 25 %}
+                                          <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal"
+                                             data-bs-target="#myModal">Withdraw</a>
+                                          {% else %}
+                                          <span style="font-size: 10px; font-weight: 200;">Need $25 or more to
+                                             withdraw</span>
+                                          {% endif %}
+                                          <!--               <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal" data-bs-target="#myModal">Withdraw</a> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-12 col-md-6 col-12">
+                                 <div class="card bg-c-yellow order-card">
+                                    <div class="card-block">
+                                       <h6 class="m-b-20">Report Problem </h6>
+                                       <h2 class="text-right"><span>{{ total_report_count }}</span></h2>
+                                       <!-- Add the button inside the card -->
+                                       <div class="button-container">
+                                          {% if problem_report_remaining_limit > 0 %}
+                                          <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal"
+                                             data-bs-target="#report">Report</a>
+                                          {% else %}
+                                          <span style="font-size: 10px; font-weight: 200;">Maximum limit reached. Try
+                                             again tommorow</span>
+                                          {% endif %}
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              {% endif %}
+                           </div>
+
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Reward given</h6>
+                           <!--          <i class="fa fa-cart-plus f-left"></i> -->
+                           <h2 class="text-right"><span>{{like_count}}</span></h2>
+                           <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Trophy given</h6>
+                           <h2 class="text-right"><span>{{trophy_count}}</span></h2>
+                           <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Your History</h6>
+                           <h2 class="text-right"><span>{{history_count}}</span></h2>
+                           <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                        </div>
+                     </div>
+                  </div>
+                  {% if session['user_id'] == user.user_id %}
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Token balance</h6>
+                           <h2 class="text-right"><span>{{user.token_balance}}</span></h2>
+                           <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Reward received</h6>
+                           <h2 class="text-right"><span>{{total_likes}} ({{total_likes_cost}})</span></h2>
+                           <!--   <p class="m-b-0">Completed Orders<span class="f-right">351</span></p> -->
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-12 d-none d-md-none d-lg-flex">
+                     <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Trophy received</h6>
+                           <h2 class="text-right"><span>{{total_trophies}} ({{total_trophies_cost}})</span></h2>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 no-mobile">
+                     <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Total price </h6>
+                           <h2 class="text-right"><span>{{total_price_cents}}</span></h2>
+                           <!-- Add the button inside the card -->
+                           <div class="button-container">
+                              {% if total_price_cents >= 25 %}
+                              <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal"
+                                 data-bs-target="#myModal">Withdraw</a>
+                              {% else %}
+                              <span style="font-size: 10px; font-weight: 200;">Need $25 or more to withdraw</span>
+                              {% endif %}
+                              <!--               <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal" data-bs-target="#myModal">Withdraw</a> -->
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 no-mobile">
+                     <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                           <h6 class="m-b-20">Report Problem </h6>
+                           <h2 class="text-right"><span>{{ total_report_count }}</span></h2>
+                           <!-- Add the button inside the card -->
+                           <div class="button-container">
+                              {% if problem_report_remaining_limit > 0 %}
+                              <a href="/payment-info" class="btn btn-sm modal-btn" data-bs-toggle="modal"
+                                 data-bs-target="#report">Report</a>
+                              {% else %}
+                              <span style="font-size: 10px; font-weight: 200;">Maximum limit reached. Try again
+                                 tommorow</span>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% endif %}
+               </div>
+               <!-- withdraw form -->
+               <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <!-- Add your modal form content here -->
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="exampleModalLabel">Enter your detail for withdrawal</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/withdraw" method="POST">
+                           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                           <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                           <input type="hidden" name="email" value="{{ session['email'] }}">
+                           <div class="modal-body">
+                              <!-- Add your form elements here -->
+                              <div class="mb-3">
+                                 <label for="name" class="form-label">Name</label>
+                                 <input type="text" name="name" class="form-control" id="name"
+                                    placeholder="Enter your name" required>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="bank_name" class="form-label">Bank name</label>
+                                 <input type="text" name="bank_name" class="form-control" id="bank_name"
+                                    placeholder="Enter bank name" required>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="routing_name" class="form-label">Routing number</label>
+                                 <input type="text" name="routing_name" class="form-control" id="routing_name"
+                                    placeholder="Enter routing number" required>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="account_num" class="form-label">Account number</label>
+                                 <input type="text" name="account_num" class="form-control" id="account_num"
+                                    placeholder="Enter your account number" required>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="amt" class="form-label">Amount</label>
+                                 <input type="text" name="amt" class="form-control" id="amt"
+                                    value="{{total_price_cents}}" readonly>
+                              </div>
+                           </div>
+                           <div class="modal-footer">
+                              <!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                              <button type="submit" class="btn modal-btn mx-auto px-4">Submit</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+               <!-- report form -->
+               <div class="modal fade" id="report" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <!-- Add your modal form content here -->
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="exampleModalLabel">Report for any problem</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/report" method="POST">
+                           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                           <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                           <div class="modal-body">
+                              <!-- Add your form elements here -->
+                              <div class="mb-3">
+                                 <label for="title" class="form-label">Title</label>
+                                 <input type="text" name="title" class="form-control" id="title"
+                                    placeholder="Enter your title" required>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="message" class="form-label">Message</label>
+                                 <input type="text" name="message" class="form-control" id="message"
+                                    placeholder="Message" required>
+                              </div>
+                           </div>
+                           <div class="modal-footer">
+                              <!--             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                              <button type="submit" class="btn modal-btn mx-auto px-4">Submit</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <style>
+               .post__col {
+                  overflow: auto;
+                  max-width: 680px;
+                  /* height: 100%; */
+                  height: calc(100vh - 80px);
+                  margin-top: 30px;
+               }
+            </style>
+            <div class="col-lg-6 col-md-12 col-12 post__col">
+               <div class="d-flex flex-column justify-content-center w-100 mx-auto">
+                  <!-- create post -->
+                  {% if session['user_id'] == user.user_id %}
+                  <div class="p-3 mt-5 shadow create-post">
+                     <!-- avatar -->
+                     <div class="d-flex" type="button">
+                        <div class="p-1">
+                           {% if user.profile %}
+                           <img src="{{ user.profile }}" alt="avatar" class="rounded-circle me-2"
+                              style="width: 38px; height: 38px; object-fit: cover" />
+                           {% else %}
+                           <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                              class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                           {% endif %}
+                        </div>
+
+                        {% if (average_rating|float >= 2 and users_rated_count > 3) or users_rated_count == 0 or
+                        users_rated_count
+                        <= 3 %} <input type="text" class="form-control rounded-pill border-0 pointer" readonly
+                           placeholder="What did you generate, {{ current_user['name']}}?" data-bs-toggle="modal"
+                           data-bs-target="#createModal" />
+
+                        {% elif (average_rating|float < 2 and users_rated_count> 3) or users_rated_count > 0 %}
+                           <input type="text" class="form-control rounded-pill border-0 pointer" disabled
+                              placeholder="2 or more rating to unlock this feature." />
+
+
+
+                           {% endif %}
+                     </div>
+                     <!-- create modal -->
+                     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                        aria-hidden="true" data-bs-backdrop="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                           <div class="modal-content">
+                              <!-- head -->
+                              <div class="modal-header align-items-center">
+                                 <h5 class="text-white text-center w-100 m-0" id="exampleModalLabel">
+                                    Create Post
+                                 </h5>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                              </div>
+                              <!-- body -->
+
+                              <!------------------create post form start--------------------->
+
+                              <div class="modal-body">
+                                 <div id="overlay"></div>
+                                 <div class="my-1 p-1">
+                                    <div class="d-flex flex-column">
+                                       <!-- name -->
+                                       <div class="d-flex align-items-center">
+                                          <div class="p-2">
+                                             {% if post.profile %}
+                                             <img src="{{ post.profile }}" alt="avatar" class="rounded-circle me-2"
+                                                style="width: 38px; height: 38px; object-fit: cover" />
+                                             {% else %}
+                                             <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                                class="rounded-circle me-2"
+                                                style="width: 38px; height: 38px; object-fit: cover" />
+                                             {% endif %}
+
+                                          </div>
+
+                                          <div class="d-flex" id="add-tab">
+                                             <p class="m-0 fw-bold">{{ current_user['name']}} </a></p>
+
+                                             <ul class="nav nav-tabs justify-content-end" id="myTabs" role="tablist">
+
+
+                                                <li class="nav-item">
+                                                   <a class="active" id="camera-tab" data-bs-toggle="tab" href="#camera"
+                                                      role="tab" aria-controls="camera" aria-selected="false"><i
+                                                         class="fa-solid fa-camera"></i></a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                   <a id="edit-tab" data-bs-toggle="tab" href="#edit" role="tab"
+                                                      aria-controls="edit" aria-selected="false"><i
+                                                         class="fa-solid fa-user"></i></a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                   <a id="text-tab" data-bs-toggle="tab" href="#text" role="tab"
+                                                      aria-controls="text" aria-selected="true"><i
+                                                         class="fa-solid fa-t"></i></a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                   <a id="image-tab" data-bs-toggle="tab" href="#image" role="tab"
+                                                      aria-controls="image" aria-selected="false"><i
+                                                         class="fa-solid fa-images"></i></a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                   <a id="video-tab" data-bs-toggle="tab" href="#video" role="tab"
+                                                      aria-controls="video" aria-selected="false"><i
+                                                         class="fa-solid fa-video-slash"></i></a>
+                                                </li>
+
+
+                                             </ul>
+                                          </div>
+                                       </div>
+                                       <!-- text -->
+                                       <div class="tab-content">
+
+
+
+                                          <div class="tab-pane fade" id="text" role="tabpanel"
+                                             aria-labelledby="text-tab">
+
+                                             <form action="/create_post" method="POST" onsubmit="showSpinner()">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                                                <input type="hidden" name="category" value="extra">
+
+                                                <div>
+                                                   <textarea name="chunk" cols="30" rows="5"
+                                                      class="form-control border-0"
+                                                      placeholder="Paste your AI generated text here or upload image"
+                                                      required="required"></textarea>
+                                                </div>
+
+                                                <!-- options -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between                          
+                                      rounded
+                                      mt-3
+                                      ">
+                                                   <input type="text" name="paste_prompt"
+                                                      placeholder="Paste your prompt here" class="form-control border-0"
+                                                      required="required">
+
+                                                </div>
+
+                                                <button type="submit" class="btn social-button w-100">Post Text
+                                                </button>
+                                             </form>
+
+                                          </div>
+                                          <!------tab text end----->
+
+
+
+
+                                          <div class="tab-pane fade" id="image" role="tabpanel"
+                                             aria-labelledby="image-tab">
+
+
+                                             <form action="/create_image" method="POST" enctype="multipart/form-data"
+                                                onsubmit="showSpinner()">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                <input type="hidden" id="user_id" name="user_id"
+                                                   value="{{ session['user_id'] }}">
+                                                <input type="hidden" id="category" name="category" value="extra">
+
+                                                <div>
+
+                                                   <div class="grey-box fs-5 text-success pointer text-center pt-5"
+                                                      id="uploadIcon"
+                                                      style="width: 100%; height: 130px; background-color: rgba(225, 225, 225, 0.1);">
+                                                      <p id="fileLabel">Upload your image here..</p>
+                                                   </div>
+                                                   <input type="file" name="file" accept="image/*" id="fileInput"
+                                                      required="required" style="display: none;">
+
+                                                </div>
+
+                                                <!-- emoji  -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between
+                                      align-items-center
+                                      my-3
+                                      ">
+                                                   <select class="form-select" name="tool" id="tool"
+                                                      aria-label="Default select example">
+                                                      <option selected value="DALL-E">DALL-E</option>
+                                                      <option value="Craiyon">Craiyon</option>
+                                                      <option value="Midjourney">Midjourney</option>
+                                                   </select>
+                                                   <!--       <img
+                                        src="https://www.facebook.com/images/composer/SATP_Aa_square-2x.png"
+                                        class="pointer"
+                                        alt="fb text"
+                                        style="
+                                        width: 30px;
+                                        height: 30px;
+                                        object-fit: cover;
+                                        "
+                                        /> -->
+                                                </div>
+
+                                                <!-- options -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between                          
+                                      rounded
+                                      mt-3
+                                      ">
+                                                   <input type="text" id="paste_prompt" name="paste_prompt"
+                                                      placeholder="Paste your prompt here" class="form-control border-0"
+                                                      required="required">
+
+                                                </div>
+
+
+                                                <button type="submit" class="btn social-button w-100">Post Image
+                                                </button>
+                                             </form>
+
+
+
+                                          </div>
+                                          <!------tab image end----->
+
+
+
+
+
+                                          <div class="tab-pane fade" id="video" role="tabpanel"
+                                             aria-labelledby="video-tab">
+
+
+                                             <form action="/create_video" method="POST" enctype="multipart/form-data"
+                                                onsubmit="showSpinner()">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                                                <input type="hidden" name="category" value="extra">
+
+                                                <div>
+
+                                                   <div class="grey-box fs-5 text-success pointer text-center pt-5"
+                                                      id="uploadVideo"
+                                                      style="width: 100%; height: 130px; background-color: rgba(225, 225, 225, 0.1);">
+                                                      <p id="fileLabel1">Upload your video here..</p>
+                                                   </div>
+                                                   <input type="file" name="video_file" accept="video/mp4"
+                                                      id="fileInput1" required="required" style="display: none;">
+
+                                                </div>
+
+                                                <!-- options -->
+                                                <div class="
+                                      d-flex
+                                      justify-content-between                          
+                                      rounded
+                                      mt-3
+                                      ">
+                                                   <input type="text" name="paste_prompt"
+                                                      placeholder="Paste your prompt here" class="form-control border-0"
+                                                      required="required">
+
+                                                </div>
+
+                                                <button type="submit" class="btn social-button w-100">Post Video
+                                                </button>
+                                             </form>
+                                          </div>
+                                          <!------tab video end----->
+
+                                          <div id="csrf" data-csrf="{{ csrf_token() }}"></div>
+
+                                          <div id="user-id" data-user-id="{{ session['user_id'] }}"></div>
+
+                                          <div class="tab-pane fade show active" id="camera" role="tabpanel"
+                                             aria-labelledby="camera-tab">
+
+                                             <div style="position: relative;">
+
+                                                <canvas class="w-100 py-2" id="photoCanvas"
+                                                   style="display: none;"></canvas>
+                                             </div>
+
+
+
+                                             <div>
+                                                <video class="w-100" id="cameraFeed" autoplay playsinline></video>
+
+                                                <div class="bnb-viewer__controls">
+                                                   <div
+                                                      class="p-2 bnb-viewer__controls-dock d-flex justify-content-around">
+                                                      <div
+                                                         class="d-lg-flex pl-4 pr-4 text-white border p-1 rounded btn-takescreenshot"
+                                                         style="cursor: pointer;">
+                                                         <i class="fa fa-light fa-camera"></i>
+                                                      </div>
+                                                      <div class="pl-4 pr-4 text-white border p-1 rounded btn-unmount"
+                                                         id="uploadIcon3" style="cursor: pointer;">
+                                                         <i class="fa fa-light fa-solid fa-images"></i>
+                                                      </div>
+                                                   </div>
+                                                </div>
+
+                                             </div>
+                                             <!-- options -->
+
+                                             <div>
+
+
+                                                <input type="file" name="file" accept="image/*" id="imageInput"
+                                                   required="required" style="display: none;">
+
+                                             </div>
+                                             <div style="text-align: center;"><small><strong>Capture, highlight, and edit with
+                                                prompt.</strong></small></div>
+                                             <div class="d-flex justify-content-between rounded mt-3 ">
+                                                <input type="text" id="img-prompt" name="paste_prompt"
+                                                placeholder="Write your prompt here" class="form-control border-0 text-prompt" />
+
+                                             </div>
+
+
+                                             <div class="btn btn-generate social-button w-100 text-white">
+                                                Generate button
+                                                <span class="isloading spinner-border spinner-border-sm" role="status"
+                                                   aria-hidden="true" style="display: none;"></span>
+                                             </div>
+
+
+                                             <div class="generated-image text-center"></div>
+
+                                          </div>
+                                          <!----end camera end---->
+
+
+                                          <!----dalle image generation---->
+
+                                          <div class="tab-pane fade" id="edit" role="tabpanel"
+                                             aria-labelledby="edit-tab">
+
+
+                                             <div class="row">
+                                                <div class="col-12 my-2">
+                                                   <div class="card mb-4 dalle-generate">
+                                                      <div id="messageContainer" class="text-center">Enter your prompt
+                                                         and generate your image.</div>
+                                                      <img id="generatedImage" src="" class="card-img-top"
+                                                         alt="generate-image" style="display: none;">
+
+                                                      <form method="POST" action="/save_image" id="dalleGenerateForm"
+                                                         style="display: none;" onsubmit="showSpinner()">
+                                                         <input type="hidden" name="csrf_token"
+                                                            value="{{ csrf_token() }}" />
+                                                         <input type="hidden" id="user_id" name="user_id"
+                                                            value="{{ session['user_id'] }}">
+                                                         <input type="hidden" id="category" name="category"
+                                                            value="extra">
+                                                         <input type="hidden" name="url" value="">
+                                                         <input type="hidden" name="paste_prompt" value="">
+                                                         <button type="submit"
+                                                            class="btn social-button w-100">Post</button>
+                                                      </form>
+
+                                                   </div>
+                                                </div>
+
+
+                                             </div>
+
+
+                                             <form class="form" method="POST" action="/generate_img1" id="generateForm">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+
+
+                                                <div>
+
+
+                                                </div>
+
+                                                <!-- options -->
+                                                <div class="d-flex justify-content-between rounded mt-3">
+                                                   <input type="text" name="paste_prompt"
+                                                      placeholder="Paste your prompt here" class="form-control border-0"
+                                                      required="required">
+
+                                                </div>
+
+
+                                                <button type="submit" id="generateBtn"
+                                                   class="btn social-button w-100">Generate Image</button>
+                                             </form>
+
+                                          </div>
+                                          <!----dalle image generation end---->
+
+
+                                       </div>
+                                       <!------tab content end----->
+
+                                    </div>
+                                 </div>
+                                 <!-- end -->
+                              </div>
+                           </div>
+                        </div>
+                        <!-------------create form end------------->
+                     </div>
+                     <hr />
+                  </div>
+                  {% endif %}
+                  <div class="col d-flex justify-content-center" id="top-tab">
+                     <ul class="nav justify-content-center" id="myTabs" role="tablist">
+                        <li class="nav-item">
+                           <a class="nav-link active" id="feed-tab" data-bs-toggle="tab" href="#feed" role="tab"
+                              aria-controls="feed" aria-selected="true"><i class="fas fa-home"></i></a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" id="insta-tab" data-bs-toggle="tab" href="#insta" role="tab"
+                              aria-controls="insta" aria-selected="false"><i class="fab fa-instagram"></i></a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" id="fb-tab" data-bs-toggle="tab" href="#fb" role="tab" aria-controls="fb"
+                              aria-selected="false"><i class="fa-solid fa-play"></i></a>
+                        </li>
+                        <li class="nav-item contentSearch d-none d-md-flex">
+                           <input type="text" id="contentSearch1" onkeyup="filterContentButtons1()"
+                              placeholder="Search">
+                        </li>
+                     </ul>
+                  </div>
+                  <div class="tab-content">
+                     <div class="tab-pane fade show active" id="feed" role="tabpanel" aria-labelledby="feed-tab">
+                        <!--------------------------------feed posts -------------------------------------->
+                        <!-- p 1 -->
+                        {% if post %}
+                        {% for data in post %}
+                        <div class="p-4 rounded shadow mt-3m post-bg content">
+                           <!-- author -->
+                           <div class="d-flex justify-content-between">
+                              <!-- avatar -->
+                              <div class="d-flex">
+                                 {% if data.profile %}
+                                 <img src="{{ data.profile }}" alt="avatar" class="rounded-circle me-2"
+                                    style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% else %}
+                                 <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                    class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% endif %}
+                                 <div>
+                                    <a href="{{ url_for('profile', user_id=data.user_id) }}">
+                                       <p class="m-0 fw-bold query">{{ data.name }}
+                                          {% if data.tool %}
+                                          <span class="query">({{ data.tool }})</span>
+                                          {% endif %}
+                                       </p>
+                                    </a>
+                                    <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                 </div>
+                              </div>
+                              <!-- edit -->
+                              {% if session['user_id'] == data.user_id %}
+                              <i class="fas fa-ellipsis-h" type="button" id="post1Menu" data-bs-toggle="dropdown"
+                                 aria-expanded="false"></i>
+                              {% endif %}
+                              <!-- edit menu -->
+                              <ul class="dropdown-menu border-0 shadow delete-tab" aria-labelledby="post1Menu">
+                                 <li class="d-flex align-items-center">
+                                    <form action="{{ url_for('delete_post', post_id=data.id) }}" method="POST">
+                                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                       <button type="submit"
+                                          class="dropdown-item d-flex justify-content-around align-items-center fs-7">Delete
+                                          Post</button>
+                                    </form>
+                                 </li>
+                              </ul>
+                           </div>
+                           <!----------------------------post content----------------------------------->
+                           <div class="my-3">
+                              <!-- content -->
+                              <!--open--->
+                              <div>
+                                 {% if data.liked_trophy %}
+                                 <p class="query" id="prompt-{{data.id}}">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% else %}
+                                 <p class="query" id="prompt-{{data.id}}" style="display: none;">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% endif %}
+                                 {% if data.file %}
+                                 {% if data.file.endswith('.mp4') %}
+                                 <center>
+                                    <video controls="controls" preload="preload" class="img-fluid rounded"
+                                       style="width: 100%;">
+                                       <source src="{{ data.file }}#t=0.001" type="video/mp4">
+                                       Your browser does not support the video tag.
+                                    </video>
+                                 </center>
+                                 {% else %}
+                                 <img src="{{ data.file }}" alt="post image" class="img-fluid rounded img-upload"
+                                    style="width: 100%;">
+                                 {% endif %}
+                                 {% endif %}
+                              </div>
+                              {% for c in data.chunk %}
+                              <div class="content">
+                                 <p class="query">{{ c }}</p>
+                              </div>
+                              {% endfor %}
+                              <div>
+                              </div>
+                              <!-- likes & comments -->
+                              <div class="post__comment mt-3 position-relative">
+                                 <div class="
+                                             d-flex
+                                             align-items-center
+                                             top-0
+                                             start-0
+                                             position-absolute
+                                             " style="height: 50px; z-index: 5">
+                                    <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                 </div>
+                                 <!-- comments start-->
+                                 <div class="accordion" id="accordion{{ data.id }}">
+                                    <div class="accordion-item border-0">
+                                       <hr />
+                                       <!-- comment & like bar -->
+                                       <div class="d-flex justify-content-around count">
+                                          <a href="/like_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted" onclick="likePost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                   id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                             <!-- 
+                                                         <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                         <p class="m-0">Like</p> -->
+                                          </a>
+                                          <a href="/trophy_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted" onclick="trophyPost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                   id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span>
+                                                <span id="liked-trophy-{{data.id}}" style="display:none;">{{
+                                                   data.liked_trophy }}</span>
+                                             </i>
+                                          </a>
+                                          <div class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted
+                                                      " data-bs-toggle="collapse"
+                                             data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                             aria-controls="collapsePost{{data.id}}">
+                                             <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Comments"> <span
+                                                   id="comment-count-{{ data.id }}">{{ data.comment_count }}</span></i>
+                                          </div>
+                                       </div>
+                                       <!-- comment expand -->
+                                       <div id="collapsePost{{data.id}}" class="accordion-collapse collapse"
+                                          aria-labelledby="heading{{data.id}}" data-bs-parent="#accordion{{data.id}}">
+                                          <hr />
+                                          <div class="accordion-body">
+                                             <!-- Comment Display Area -->
+                                             <div id="comment-container-{{ data.id }}">
+                                                {% for c in comment %}
+                                                {% if c.post_id == data.id %}
+                                                <div class="d-flex align-items-center mb-4">
+                                                   <!-- avatar -->
+                                                   {% if c.profile %}
+                                                   <img src="{{ c.profile}}" alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% else %}
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% endif %}
+                                                   <!-- comment text -->
+                                                   <div class="px-2 rounded comment__input w-100 comment-text">
+                                                      <p class="fw-bold m-0">{{ c.name }}</p>
+                                                      <p class="m-0 fs-7 rounded">{{ c.text }}</p>
+                                                   </div>
+                                                </div>
+                                                {% endif %}
+                                                {% endfor %}
+                                             </div>
+                                             <!-- Create Comment Form -->
+                                             <form class="d-flex my-1"
+                                                onsubmit="submitComment({{ data.id }}); return false;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <!-- avatar -->
+                                                <div>
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                </div>
+                                                <!-- input -->
+                                                <input id="comment-input-{{ data.id }}" type="text" name="text"
+                                                   class="form-control border-0 rounded-pill"
+                                                   placeholder="Write a comment" />
+                                                <button type="submit" class="btn"
+                                                   style="background-color: rgba(225, 225, 225, 0.1); margin-left: 5px;">
+                                                   <i class="fa-solid fa-paper-plane text-white"></i>
+                                                </button>
+                                             </form>
+                                          </div>
+                                          <!----check---->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!-- end -->
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                     </div>
+                     <!-----end tab-pane feed--->
+                     <div class="tab-pane fade" id="insta" role="tabpanel" aria-labelledby="insta-tab">
+                        <!--------------------------------insta posts -------------------------------------->
+                        <!-- p 1 -->
+                        {% if post %}
+                        {% for data in post %}
+                        {% if data.category == 'extra' and data.file and not data.file.endswith('.mp4') %}
+                        <div class="p-4 rounded shadow mt-3m post-bg content">
+                           <!-- author -->
+                           <div class="d-flex justify-content-between">
+                              <!-- avatar -->
+                              <div class="d-flex">
+                                 {% if data.profile %}
+                                 <img src="{{ data.profile }}" alt="avatar" class="rounded-circle me-2"
+                                    style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% else %}
+                                 <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                    class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% endif %}
+                                 <div>
+                                    <a href="{{ url_for('profile', user_id=data.user_id) }}">
+                                       <p class="m-0 fw-bold query">{{ data.name }}
+                                          {% if data.tool %}
+                                          <span class="query">({{ data.tool }})</span>
+                                          {% endif %}
+                                       </p>
+                                    </a>
+                                    <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                 </div>
+                              </div>
+                              <!-- edit -->
+                              {% if session['user_id'] == data.user_id %}
+                              <i class="fas fa-ellipsis-h" type="button" id="post1Menu" data-bs-toggle="dropdown"
+                                 aria-expanded="false"></i>
+                              <!-- edit menu -->
+                              {% endif %}
+                              <ul class="dropdown-menu border-0 shadow delete-tab" aria-labelledby="post1Menu">
+                                 <li class="d-flex align-items-center">
+                                    <form action="{{ url_for('delete_post', post_id=data.id) }}" method="POST">
+                                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                       <button type="submit"
+                                          class="dropdown-item d-flex justify-content-around align-items-center fs-7">Delete
+                                          Post</button>
+                                    </form>
+                                 </li>
+                              </ul>
+                           </div>
+                           <!----------------------------post content----------------------------------->
+                           <div class="my-3">
+                              <!-- content -->
+                              <!--open--->
+                              <div>
+                                 {% if data.liked_trophy %}
+                                 <p class="query" id="prompt-{{data.id}}">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% else %}
+                                 <p class="query" id="prompt-{{data.id}}" style="display: none;">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% endif %}
+                                 {% if data.file %}
+                                 <img src="{{ data.file }}" alt="post image" class="img-fluid rounded img-upload"
+                                    style="width: 100%;" />
+                                 {% endif %}
+                              </div>
+                              {% for c in data.chunk %}
+                              <p class="query">{{ c }}</p>
+                              {% endfor %}
+                              <!-- likes & comments -->
+                              <div class="post__comment mt-3 position-relative">
+                                 <div class="
+                                             d-flex
+                                             align-items-center
+                                             top-0
+                                             start-0
+                                             position-absolute
+                                             " style="height: 50px; z-index: 5">
+                                    <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                 </div>
+                                 <!-- comments start-->
+                                 <div class="accordion" id="accordion{{ data.id }}">
+                                    <div class="accordion-item border-0">
+                                       <hr />
+                                       <!-- comment & like bar -->
+                                       <div class="d-flex justify-content-around">
+                                          <a href="/like_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted" onclick="likePost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                   id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                             <!-- 
+                                                         <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                         <p class="m-0">Like</p> -->
+                                          </a>
+                                          <a href="/trophy_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted" onclick="trophyPost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                   id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span>
+                                                <span id="liked-trophy-{{data.id}}" style="display:none;">{{
+                                                   data.liked_trophy }}</span>
+                                             </i>
+                                          </a>
+                                          <div class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted
+                                                      " data-bs-toggle="collapse"
+                                             data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                             aria-controls="collapsePost{{data.id}}">
+                                             <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Comments"> <span
+                                                   id="comment-count-{{ data.id }}">{{ data.comment_count }}</span></i>
+                                          </div>
+                                       </div>
+                                       <!-- comment expand -->
+                                       <div id="collapsePost{{data.id}}" class="accordion-collapse collapse"
+                                          aria-labelledby="heading{{data.id}}" data-bs-parent="#accordion{{data.id}}">
+                                          <hr />
+                                          <div class="accordion-body">
+                                             <!-- Comment Display Area -->
+                                             <div id="comment-container-{{ data.id }}">
+                                                {% for c in comment %}
+                                                {% if c.post_id == data.id %}
+                                                <div class="d-flex align-items-center mb-4">
+                                                   <!-- avatar -->
+                                                   {% if c.profile %}
+                                                   <img src="{{ c.profile}}" alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% else %}
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% endif %}
+                                                   <!-- comment text -->
+                                                   <div class="px-2 rounded comment__input w-100 comment-text">
+                                                      <p class="fw-bold m-0">{{ c.name }}</p>
+                                                      <p class="m-0 fs-7 rounded">{{ c.text }}</p>
+                                                   </div>
+                                                </div>
+                                                {% endif %}
+                                                {% endfor %}
+                                             </div>
+                                             <!-- Create Comment Form -->
+                                             <form class="d-flex my-1"
+                                                onsubmit="submitComment({{ data.id }}); return false;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <!-- avatar -->
+                                                <div>
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                </div>
+                                                <!-- input -->
+                                                <input id="comment-input-{{ data.id }}" type="text" name="text"
+                                                   class="form-control border-0 rounded-pill"
+                                                   placeholder="Write a comment" />
+                                                <button type="submit" class="btn"
+                                                   style="background-color: rgba(225, 225, 225, 0.1); margin-left: 5px;">
+                                                   <i class="fa-solid fa-paper-plane text-white"></i>
+                                                </button>
+                                             </form>
+                                          </div>
+                                          <!----check---->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!-- end -->
+                              </div>
+                           </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                     </div>
+                     <!-----end tab-pane insta--->
+                     <div class="tab-pane fade" id="fb" role="tabpanel" aria-labelledby="fb-tab">
+                        <!--------------------------------fb posts -------------------------------------->
+                        <!-- p 1 -->
+                        {% if post %}
+                        {% for data in post %}
+                        {% if data.category == 'extra' and data.file.endswith('.mp4') %}
+                        <div class="p-4 rounded shadow mt-3m post-bg content">
+                           <!-- author -->
+                           <div class="d-flex justify-content-between">
+                              <!-- avatar -->
+                              <div class="d-flex">
+                                 {% if data.profile %}
+                                 <img src="{{ data.profile }}" alt="avatar" class="rounded-circle me-2"
+                                    style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% else %}
+                                 <img src="https://source.unsplash.com/collection/happy-people" alt="avatar"
+                                    class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover" />
+                                 {% endif %}
+                                 <div>
+                                    <a href="{{ url_for('profile', user_id=data.user_id) }}">
+                                       <p class="m-0 fw-bold query">{{ data.name }}
+                                          {% if data.tool %}
+                                          <span class="query">({{ data.tool }})</span>
+                                          {% endif %}
+                                       </p>
+                                    </a>
+                                    <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                 </div>
+                              </div>
+                              <!-- edit -->
+                              {% if session['user_id'] == data.user_id %}
+                              <i class="fas fa-ellipsis-h" type="button" id="post1Menu" data-bs-toggle="dropdown"
+                                 aria-expanded="false"></i>
+                              {% endif %}
+                              <!-- edit menu -->
+                              <ul class="dropdown-menu border-0 shadow delete-tab" aria-labelledby="post1Menu">
+                                 <li class="d-flex align-items-center">
+                                    <form action="{{ url_for('delete_post', post_id=data.id) }}" method="POST">
+                                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                       <button type="submit"
+                                          class="dropdown-item d-flex justify-content-around align-items-center fs-7">Delete
+                                          Post</button>
+                                    </form>
+                                 </li>
+                              </ul>
+                           </div>
+                           <!----------------------------post content----------------------------------->
+                           <div class="my-3">
+                              <!-- content -->
+                              <!--open--->
+                              <div>
+                                 {% if data.liked_trophy %}
+                                 <p class="query" id="prompt-{{data.id}}">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% else %}
+                                 <p class="query" id="prompt-{{data.id}}" style="display: none;">
+                                    <strong>Prompt: </strong> {{ data.title }}
+                                 </p>
+                                 {% endif %}
+                                 {% if data.file %}
+                                 {% if data.file.endswith('.mp4') %}
+                                 <center>
+                                    <video controls="controls" preload="preload" class="img-fluid rounded"
+                                       style="width: 100%;">
+                                       <source src="{{ data.file }}" type="video/mp4">
+                                       Your browser does not support the video tag.
+                                    </video>
+                                 </center>
+                                 {% endif %}
+                                 {% endif %}
+                              </div>
+                              {% for c in data.chunk %}
+                              <p class="query">{{ c }}</p>
+                              {% endfor %}
+                              <!--close-->
+                              <!-- likes & comments -->
+                              <div class="post__comment mt-3 position-relative">
+                                 <div class="
+                                             d-flex
+                                             align-items-center
+                                             top-0
+                                             start-0
+                                             position-absolute
+                                             " style="height: 50px; z-index: 5">
+                                    <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                 </div>
+                                 <!-- comments start-->
+                                 <div class="accordion" id="accordion{{ data.id }}">
+                                    <div class="accordion-item border-0">
+                                       <hr />
+                                       <!-- comment & like bar -->
+                                       <div class="d-flex justify-content-around count">
+                                          <a href="/like_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted
+                                                      " onclick="likePost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Reward"> <span
+                                                   id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                             <!-- 
+                                                         <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                         <p class="m-0">Like</p> -->
+                                          </a>
+                                          <a href="/trophy_post/{{data.id}}" class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted" onclick="trophyPost(event, '{{data.id}}')">
+                                             <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                             <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Trophy"> <span
+                                                   id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span>
+                                                <span id="liked-trophy-{{data.id}}" style="display:none;">{{
+                                                   data.liked_trophy }}</span>
+                                             </i>
+                                          </a>
+                                          <div class="
+                                                      dropdown-item
+                                                      rounded
+                                                      d-flex
+                                                      justify-content-center
+                                                      align-items-center
+                                                      pointer
+                                                      text-muted
+                                                      " data-bs-toggle="collapse"
+                                             data-bs-target="#collapsePost{{data.id}}" aria-expanded="false"
+                                             aria-controls="collapsePost{{data.id}}">
+                                             <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                data-bs-placement="right" data-bs-original-title="Comments"> <span
+                                                   id="comment-count-{{ data.id }}">{{ data.comment_count }}</span></i>
+                                          </div>
+                                       </div>
+                                       <!-- comment expand -->
+                                       <div id="collapsePost{{data.id}}" class="accordion-collapse collapse"
+                                          aria-labelledby="heading{{data.id}}" data-bs-parent="#accordion{{data.id}}">
+                                          <hr />
+                                          <div class="accordion-body">
+                                             <!-- Comment Display Area -->
+                                             <div id="comment-container-{{ data.id }}">
+                                                {% for c in comment %}
+                                                {% if c.post_id == data.id %}
+                                                <div class="d-flex align-items-center mb-4">
+                                                   <!-- avatar -->
+                                                   {% if c.profile %}
+                                                   <img src="{{ c.profile}}" alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% else %}
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                   {% endif %}
+                                                   <!-- comment text -->
+                                                   <div class="px-2 rounded comment__input w-100 comment-text">
+                                                      <p class="fw-bold m-0">{{ c.name }}</p>
+                                                      <p class="m-0 fs-7 rounded">{{ c.text }}</p>
+                                                   </div>
+                                                </div>
+                                                {% endif %}
+                                                {% endfor %}
+                                             </div>
+                                             <!-- Create Comment Form -->
+                                             <form class="d-flex my-1"
+                                                onsubmit="submitComment({{data.id}}); return false;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <!-- avatar -->
+                                                <div>
+                                                   <img src="https://source.unsplash.com/collection/happy-people"
+                                                      alt="avatar" class="rounded-circle me-2"
+                                                      style="width: 38px; height: 38px; object-fit: cover;" />
+                                                </div>
+                                                <!-- input -->
+                                                <input id="comment-input-{{ data.id }}" type="text" name="text"
+                                                   class="form-control border-0 rounded-pill"
+                                                   placeholder="Write a comment" />
+                                                <button type="submit" class="btn"
+                                                   style="background-color: rgba(225, 225, 225, 0.1); margin-left: 5px;">
+                                                   <i class="fa-solid fa-paper-plane text-white"></i>
+                                                </button>
+                                             </form>
+                                          </div>
+                                          <!---check--->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!-- end -->
+                              </div>
+                           </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                     </div>
+                     <!-----end tab-pane fb--->
+                  </div>
+                  <!---col-10 second end---->
+               </div>
+
+
+            </div>
+
+            <div class="col-lg-3 col-md-12 col-12 my-5" style="height: 90vh; overflow: auto;">
+               <div class="p-3 sponsor-ad">
+                  <!-- sponsors -->
+                  <h5 class="text-muted">Promoted</h5>
+                  <!-- s 1 -->
+                  {% for p in promoted %}
+                  <li class="dropdown-item my-2 d-flex justify-content-between">
+                     <!-- img -->
+                     <a href="{{ p.link }}" target='_blank' class="
+                      d-flex
+                      align-items-center
+                      text-decoration-none
+                      link-dark
+                      ">
+                        <img src="{{ p.image }}" alt="ads" style="width: 100px; height: 100px; object-fit: cover"
+                           class="rounded me-3" />
+                        <div>
+                           <p class="m-0">{{ p.name }}</p>
+                           <span class="text-muted fs-7">{{ p.link }}</span>
+                        </div>
+                     </a>
+                  </li>
+                  {% endfor %}
+               </div>
+
+
+
+
+            </div>
+         </div>
+      </div>
+      <!-- Add this script to the bottom of your HTML template -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous">
+         </script>
+      <script src="static/script.js"></script>
+      <script type="text/javascript">
+         $(function () {
+            var $cameraFeed = $('#cameraFeed');
+            var $captureButton = $('.btn-takescreenshot');
+            var $closeButton = $('.btn-unmount');
+            var $photoCanvas = $('#photoCanvas');
+            var photoContext = $photoCanvas[0].getContext('2d');
+            var $generateButton = $('.btn-generate');
+            var $textPrompt = $('.text-prompt');
+            var cameraStream = true;
+            var originalImgData = null;
+            var maskImgData = null;
+
+            // Create a new div element
+            const eraserPointer = $('<div>', {
+               text: '', // Div text
+               id: 'pointer' // ID for the div
+            });
+
+            eraserPointer.on('mousedown', function (e) {
+               // mouseDown = true;
+               e.stopPropagation();
+            }).on('mouseup', function (e) {
+               // e.preventDefault()
+               e.stopPropagation();
+               mouseDown = false;
+
+            }).on('mousemove', function (event) { })
+
+            eraserPointer.on('touchstart', function (e) {
+               // mouseDown = true;
+               e.stopPropagation();
+            }).on('touchend', function (e) {
+               e.stopPropagation();
+               mouseDown = false;
+            })
+
+            eraserPointer.css('position', 'absolute');
+            eraserPointer.css({ background: 'yellow' });
+            // Append the new div to the container div
+            $photoCanvas.parent().append(eraserPointer);
+
+            $captureButton.click(function () {
+               if (!cameraStream) {
+                  return;
+               }
+
+               $photoCanvas[0].width = $cameraFeed[0].videoWidth;
+               $photoCanvas[0].height = $cameraFeed[0].videoHeight;
+
+               photoContext.drawImage($cameraFeed[0], 0, 0, $photoCanvas[0].width, $photoCanvas[0]
+                  .height);
+
+
+
+               originalImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+               $photoCanvas.show();
+            });
+
+            $closeButton.click(function () {
+               if (cameraStream) {
+                  cameraStream.getTracks().forEach(function (track) {
+                     track.stop();
+                  });
+                  cameraStream = true;
+               }
+
+               $('#cameraContainer').hide();
+            });
+
+            $generateButton.click(function () {
+
+               if ($('.isloading').is(':visible')) {
+                  alert('please wait processing')
+                  return;
+               }
+
+               $('.isloading').show();
+
+               maskImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+
+               // var link = document.createElement('a');
+               // link.href = $photoCanvas[0].toDataURL('image/png');
+               // link.download = 'photo.png';
+               // link.click();
+               // return;
+               $.ajax({
+                  url: "/api/generate/",
+                  type: 'POST',
+                  data: {
+                     prompt: $textPrompt.val(),
+                     image: originalImgData,
+                     mask: maskImgData,
+                     csrf_token: '{{ csrf_token() }}'
+                  }, // Replace with your actual data
+                  // contentType: 'multipart/form-data',
+
+                  success: function (data) {
+                     let intervalId = setInterval(() => {
+                        // return;
+                        $.ajax({
+                           url: "/status/" + data.task_id,
+                           type: 'GET',
+                           // contentType: 'multipart/form-data',
+
+                           success: function (data) {
+                              if (data.ready == 'SUCCESS') {
+                                 clearInterval(intervalId)
+
+                                 console.log('Success:', data);
+                                 data = data.value;
+                                 let loadedCount = 0;
+
+                                 // Iterate over the first 4 URLs in the data.data array
+                                 for (let i = 0; i < 1 && i < data.data.length; i++) {
+
+                                    // Create an image element
+                                    var imgElement = $("<img class='w-100 mt-3' />");
+
+                                    // Store the image URL as a data attribute
+                                    imgElement.data('image-url', data.data[i].url);
+
+                                    // Display the image URL as text
+                                    var urlText = $("<p>").text("Image URL: " + data.data[i].url);
+
+                                    // Create a download link
+                                    var downloadLink = $("<a>")
+                                       .text("Download")
+                                       .attr('href', '/api/download/' + (i + 1))
+                                       .attr('download', 'generated_image_' + (i + 1) + '.png');
+
+
+
+                                    // Create a post button
+                                    var postButton = $("<button class='btn social-button w-100'>")
+                                       .text("Post")
+                                       .data('image-url', data.data[i].url)
+                                       .on('click', function () {
+                                          // Get the image URL from the data attribute
+                                          var imageUrl = $(this).data('image-url');
+                                          var prompt = $('#img-prompt').val();
+
+                                          var csrfToken = $('#csrf').data('csrf');
+
+
+                                          // Show the spinner before making the AJAX request
+                                          $('#spinner').show();
+                                          $('#overlay').show();
+
+
+                                          // Send a POST request to your Flask endpoint to post the image to the database
+                                          $.ajax({
+                                             url: '/api/post_image',
+                                             type: 'POST',
+                                             data: {
+                                                image_url: imageUrl,
+                                                prompt: prompt,
+                                                csrf_token: csrfToken
+
+
+                                             },
+                                             success: function (response) {
+
+                                                // Hide the spinner once the AJAX request is complete
+                                                $('#spinner').hide();
+                                                $('#overlay').hide();
+
+                                                // Handle the response if needed
+                                                console.log('Image posted to the database:', response);
+
+                                                // Check if the response indicates success
+                                                if (response.message === 'Image posted to the database and saved to S3 successfully') {
+                                                   // Assuming you have a variable 'profileUrl' with the URL of the user's profile page
+                                                   var profileUrl = '/profile/' + '{{ session.user_id }}';
+
+                                                   // Redirect the user to their profile page
+                                                   window.location.href = profileUrl;
+                                                }
+                                             },
+                                             error: function () {
+                                                // Hide the spinner in case of an error
+                                                $('#spinner').hide();
+                                                $('#overlay').hide();
+                                             }
+                                          });
+                                       });
+
+                                    // Attach a load event listener to the image
+                                    imgElement.on('load', function () {
+                                       console.log('Image is loaded and rendered!');
+
+                                       // Increase the loadedCount by 1 for every loaded image
+                                       loadedCount++;
+
+                                       // If all 1 images have loaded
+                                       if (loadedCount === 1) {
+                                          $('.isloading')
+                                             .hide(); // hide loading indicator
+                                       }
+                                    });
+
+                                    // Set the image source (starts loading the image)
+                                    imgElement.attr('src', data.data[i].url);
+
+
+
+                                    // Append the image and download link to the target element
+                                    $('.generated-image').append(imgElement);
+                                    $('.generated-image').append(downloadLink);
+                                    $('.generated-image').append(postButton);
+
+                                 }
+
+                              }
+                           },
+                           error: function (err) {
+                              console.error('Error:', error);
+                              clearInterval(intervalId)
+                              $('.isloading').hide();
+                           }
+                        })
+                     }, 1000)
+                  },
+                  error: function (xhr, status, error) {
+                     console.error('Error:', error);
+                     $('.isloading').hide();
+                     alert("Server: We must use another image");
+                  }
+               });
+
+            })
+
+            /// Handle input element change event
+            $('#imageInput').change(function (event) {
+               var file = event.target.files[0];
+               if (file) {
+                  //   if(file.size >= 3.5*1024*1024) {
+                  //       alert("We must use image less than 4MB");
+                  //       return;
+                  //   }
+                  var img = new Image();
+                  img.onload = function () {
+                     // Draw the selected image onto the canvas
+                     $photoCanvas[0].width = img.width;
+                     $photoCanvas[0].height = img.height;
+                     photoContext.drawImage(img, 0, 0);
+                     originalImgData = $photoCanvas[0].toDataURL('image/png').split(',')[1];
+                  };
+                  img.src = URL.createObjectURL(file);
+                  $photoCanvas.show();
+               }
+            });
+
+            function clearCanvas() {
+               $photoCanvas[0].getContext('2d').clearRect(0, 0, $photoCanvas[0].width, $photoCanvas[0].height);
+            }
+
+            //in computer
+            var mouseDown = false;
+
+            $photoCanvas.on('mousedown', function () {
+               mouseDown = true;
+            }).on('mouseup', function () {
+               mouseDown = false;
+            }).on('mousemove', function (event) {
+               if (mouseDown) {
+                  let dialogWide = Math.min($('#createModal .modal-dialog').eq(0).width(), $(
+                     '#createModal .modal-dialog').eq(0).height());
+                  let photoWide = Math.min($photoCanvas[0].width, $photoCanvas[0].width);
+                  var cursorSize = photoWide / dialogWide * 10; // Adjust as needed
+
+                  eraserPointer.addClass('rounded-circle');
+                  eraserPointer.css({
+                     left: event.clientX - $photoCanvas.parent().offset().left - 15 / 2,
+                     top: event.clientY - $photoCanvas.parent().offset().top - 15 / 2,
+                     width: 15,
+                     height: 15
+                  })
+                  eraserPointer.show();
+
+                  var x = event.offsetX * $photoCanvas[0].width / $photoCanvas[0].clientWidth;
+                  var y = event.offsetY * $photoCanvas[0].height / $photoCanvas[0].clientHeight;
+
+                  // Draw a transparent rectangle at the cursor position
+                  photoContext.clearRect(x - cursorSize / 2, y - cursorSize / 2, cursorSize,
+                     cursorSize);
+               } else {
+                  eraserPointer.hide();
+               }
+            });
+
+            //in mobile
+            $photoCanvas.on('touchstart', function (event) {
+               mouseDown = true;
+            }).on('touchend', function (event) {
+               mouseDown = false;
+               eraserPointer.hide();
+            }).on('touchmove', function (event) {
+               event.preventDefault(); // Prevent default touch behavior
+
+               if (mouseDown) {
+                  let dialogWide = Math.min($('#createModal .modal-dialog').eq(0).width(), $(
+                     '#createModal .modal-dialog').eq(0).height());
+                  let photoWide = Math.min($photoCanvas[0].width, $photoCanvas[0].width);
+                  var cursorSize = photoWide / dialogWide * 15; // Adjust as needed
+
+                  var touch = event.touches[0]; // Get the first touch
+
+                  eraserPointer.addClass('rounded-circle');
+                  eraserPointer.css({
+                     left: touch.clientX - $photoCanvas.parent().offset().left - 15 / 2,
+                     top: touch.clientY - $photoCanvas.parent().offset().top - 15 / 2,
+                     width: 15,
+                     height: 15
+                  })
+                  eraserPointer.show();
+
+                  // Calculate the touch position relative to the canvas
+                  var canvasRect = $photoCanvas[0];
+                  var x = (touch.clientX - canvasRect.getBoundingClientRect().left) * canvasRect
+                     .width / canvasRect.clientWidth;
+                  var y = (touch.clientY - canvasRect.getBoundingClientRect().top) * canvasRect
+                     .height / canvasRect.clientHeight;
+
+                  // Draw a transparent rectangle at the touch position
+                  photoContext.clearRect(x - cursorSize / 2, y - cursorSize / 2, cursorSize,
+                     cursorSize);
+               } else {
+                  eraserPointer.hide();
+               }
+            });
+
+
+            // Handle input element change event
+            $('#imageInput').change(function (event) {
+               clearCanvas(); // Clear canvas before drawing the selected image
+
+               // ... Your existing code for drawing the selected image ...
+            });
+
+            $('#createModal').on('show.bs.modal', function () {
+               console.log("Modal showed " + 'createModal');
+
+               if (isMobile()) {
+
+               } else {
+                  console.log(navigator.mediaDevices);
+                  navigator.mediaDevices?.getUserMedia({
+                     video: true
+                  })
+                     .then(function (stream) {
+                        cameraStream = stream;
+                        $cameraFeed[0].srcObject = cameraStream;
+                     })
+                     .catch(function (error) {
+                        console.error('Error accessing camera:', error);
+                     });
+               }
+            });
+
+            $('#createModal').on('hidden.bs.modal', function () {
+               console.log("Modal closed " + 'createModal');
+
+               if (cameraStream != null)
+                  cameraStream.getTracks()[0].stop();
+            });
+
+            // Modal hidden event fired  
+            function isMobile() {
+               const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+               return regex.test(navigator.userAgent);
+            }
+
+            // if (isMobile()) {  
+            //     console.log("Mobile device detected");  
+            //     //remove the icon  
+            //     $captureButton.hide();  
+            // } else {  
+            //     console.log("Desktop device detected");  
+            //     $captureButton.show();  
+            // }
+
+         });
+
+         function likePost(event, postId) {
+            event.preventDefault();
+
+            if (parseInt('{{current_user.token_balance}}') < 1) {
+               alert('You need minimum 1 token balance');
+               return;
+            }
+
+            $.ajax({
+               url: "/like_post/" + postId,
+               type: "GET",
+               success: function (response) {
+                  if (response && response.like_count !== undefined) {
+                     var likeCount = response.like_count;
+                     var likeCountElement = document.getElementById("like-count-" + postId);
+                     if (likeCountElement) {
+                        likeCountElement.innerText = likeCount;
+                     }
+                  }
+               },
+               error: function (error) {
+                  // Handle the error response if needed
+               }
+            });
+         }
+
+
+         function trophyPost(event, postId) {
+            event.preventDefault();
+
+            if (parseInt('{{current_user.token_balance}}') < 25) {
+               alert('You need minimum 25 token balance');
+               return;
+            }
+
+
+            $.ajax({
+               url: "/trophy_post/" + postId,
+               type: "GET",
+               success: function (response) {
+
+
+                  if (response && response.trophy_count !== undefined && response.liked_trophy !== undefined) {
+                     // Handle the success response
+                     var trophyCount = response.trophy_count;
+                     var likedTrophy = response.liked_trophy;
+
+
+
+                     // Update the trophy count on the page
+                     var trophyCountElement = document.getElementById("trophy-count-" + postId);
+                     var showTrophy = document.getElementById("liked-trophy-" + postId);
+
+                     if (trophyCountElement && showTrophy) {
+                        trophyCountElement.innerText = trophyCount;
+                        showTrophy.innerText = likedTrophy;
+                     }
+
+                     // Check if the trophy count is 1 and the user who clicked it
+                     if (likedTrophy === 1) {
+                        // Show the prompt data
+                        document.getElementById("prompt-" + postId).style.display = "block";
+                        document.getElementById("content-" + postId).style.display = "none";
+                     } else {
+                        // Show the content data
+                        document.getElementById("prompt-" + postId).style.display = "none";
+                        document.getElementById("content-" + postId).style.display = "block";
+                     }
+                  }
+               },
+
+               error: function (error) {
+                  // Handle the error response if needed
+
+               }
+            });
+         }
+
+
+
+
+         function submitComment(postId) {
+            const commentText = document.getElementById('comment-input-' + postId).value;
+            const csrfToken = document.getElementsByName('csrf_token')[0].value;
+
+            // Send the comment data via AJAX to the Flask route
+            $.ajax({
+               type: 'POST',
+               url: `/create_comment/${postId}`,
+               data: {
+                  text: commentText,
+                  csrf_token: csrfToken,
+               },
+               success: function (data) {
+                  // On success, update the comments section dynamically
+                  const commentContainer = document.getElementById('comment-container-' + postId);
+
+                  // Create a new comment element and add it to the comments section
+                  const newComment = document.createElement('div');
+                  newComment.innerHTML = `
+         <div class="d-flex align-items-center mb-4">
+           <!-- avatar -->
+           <img
+             src="https://source.unsplash.com/collection/happy-people"
+             alt="avatar"
+             class="rounded-circle me-2"
+             style="width: 38px; height: 38px; object-fit: cover;"
+           />
+           <!-- comment text -->
+           <div class="px-2 rounded comment__input w-100 comment-text">
+             <p class="fw-bold m-0">${data.name}</p>
+             <p class="m-0 fs-7 rounded">${data.text}</p>
+           </div>
+         </div>
+         `;
+                  commentContainer.appendChild(newComment);
+
+                  // Clear the comment input field after submission
+                  document.getElementById('comment-input-' + postId).value = '';
+
+                  // Update the comment count
+                  const commentCountElement = document.getElementById('comment-count-' + postId);
+                  commentCountElement.textContent = parseInt(commentCountElement.textContent) + 1;
+
+
+               },
+               error: function (error) {
+                  // Handle error if necessary
+                  console.error(error);
+               },
+            });
+         }
+
+
+
+         document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll(".rating-container label");
+            const ratingValueInput = document.getElementById("rating-value");
+            const ratingForm = document.getElementById("rating-form");
+
+            let currentRating = 0;
+
+            stars.forEach((star, index) => {
+               star.addEventListener("click", function () {
+                  currentRating = index + 1;
+
+                  // Update the form input with the selected rating
+                  ratingValueInput.value = currentRating;
+
+                  // Submit the form when a star is clicked
+                  ratingForm.submit();
+               });
+            });
+         });
+
+         // dalle edit image custom input 
+         document.getElementById("uploadIcon3").addEventListener("click", function () {
+            document.getElementById("imageInput").click();
+         });
+
+
+         // upload image custom input 
+         document.getElementById("uploadIcon").addEventListener("click", function () {
+            document.getElementById("fileInput").click();
+         });
+
+         // show name and restrict image file size above 2mb
+         document.getElementById('fileInput').addEventListener('change', function (event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0]; // Get the selected file
+            const fileLabel = document.getElementById("fileLabel");
+
+            // Check if a file was selected
+            if (file) {
+               // Check if the file size is above 5MB
+               const maxSize = 5 * 1024 * 1024;
+               if (file.size > maxSize) {
+                  alert('File size exceeds 5MB. Please choose a smaller file.');
+                  fileInput.value = ''; // Clear the input
+                  fileLabel.textContent = 'Upload your image here..'; // Reset the label
+               } else {
+                  fileLabel.textContent = file.name; // Display the selected file's name
+               }
+            } else {
+               fileLabel.textContent = 'Upload your image here..'; // No file selected, reset label
+            }
+         });
+
+
+         // upload video custom input 
+         document.getElementById("uploadVideo").addEventListener("click", function () {
+            document.getElementById("fileInput1").click();
+         });
+
+
+         // show name and restrict video file size above 2mb
+         document.getElementById('fileInput1').addEventListener('change', function (event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0]; // Get the selected file
+            const fileLabel = document.getElementById("fileLabel1");
+
+            // Check if a file was selected
+            if (file) {
+               // Check if the file size is above 10MB
+               const maxSize = 10 * 1024 * 1024;
+               if (file.size > maxSize) {
+                  alert('File size exceeds 10MB. Please choose a smaller file.');
+                  fileInput.value = ''; // Clear the input
+                  fileLabel.textContent = 'Upload your image here..'; // Reset the label
+               } else {
+                  fileLabel.textContent = file.name; // Display the selected file's name
+               }
+            } else {
+               fileLabel.textContent = 'Upload your image here..'; // No file selected, reset label
+            }
+         });
+
+
+         // search query filter for content on social feed
+         function filterContentButtons1() {
+            var input, filter, content, paragraphs, i, txtValue;
+            input = document.getElementById("contentSearch1");
+            filter = input.value.toLowerCase();
+            content = document.getElementsByClassName("content");
+
+            for (i = 0; i < content.length; i++) {
+               paragraphs = content[i].getElementsByClassName("query");
+               var found = false;
+
+               for (var j = 0; j < paragraphs.length; j++) {
+                  txtValue = paragraphs[j].textContent || paragraphs[j].innerText;
+                  if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                     found = true;
+                     break;
+                  }
+               }
+
+               if (found) {
+                  content[i].style.display = "";
+               } else {
+                  content[i].style.display = "none";
+               }
+            }
+         }
+
+         function showAllContent1() {
+            var content = document.getElementsByClassName("content");
+            for (var i = 0; i < content.length; i++) {
+               content[i].style.display = "";
+            }
+         }
+
+         // Initial call to show all content
+         showAllContent1();
+
+
+
+         function checkImageStatus(filename) {
+            // Construct the S3 URL
+            const s3Url = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
+
+            // Check if the image exists on S3
+            fetch(s3Url, {
+               method: 'HEAD'
+            })
+               .then(response => {
+                  if (response.ok) {
+                     // Image exists, update the <img> tag
+                     document.getElementById('uploaded-image').src = s3Url;
+                  } else {
+                     // Image does not exist yet, retry after a delay
+                     setTimeout(() => checkImageStatus(filename), 1000); // Retry after 1 second
+                  }
+               })
+               .catch(error => {
+                  console.error('Error checking image status:', error);
+               });
+         }
+
+
+
+
+         // function to show search data top-nav bar
+         function myFunction() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("myUL");
+
+            // Show or hide the list based on whether there is any input
+            if (filter.trim() === '') {
+               ul.style.display = "none";
+               return;
+            } else {
+               ul.style.display = "block";
+            }
+
+            // Make an API call to your Flask app
+            fetch(`/api/users?q=${filter}`)
+               .then(response => response.json())
+               .then(data => {
+                  // Update the list of names with the API response
+                  ul.innerHTML = '';
+                  data.forEach(user => {
+                     ul.innerHTML += `<li><a href="/profile/${user.user_id}">${user.name}</a></li>`;
+                  });
+               })
+               .catch(error => {
+                  console.error('Error fetching data:', error);
+               });
+         }
+
+         function myFunction1() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById("moInput");
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("myMO");
+
+            // Show or hide the list based on whether there is any input
+            if (filter.trim() === '') {
+               ul.style.display = "none";
+               return;
+            } else {
+               ul.style.display = "block";
+            }
+
+            // Make an API call to your Flask app
+            fetch(`/api/users?q=${filter}`)
+               .then(response => response.json())
+               .then(data => {
+                  // Update the list of names with the API response
+                  ul.innerHTML = '';
+                  data.forEach(user => {
+                     ul.innerHTML += `<li><a href="/profile/${user.user_id}">${user.name}</a></li>`;
+                  });
+               })
+               .catch(error => {
+                  console.error('Error fetching data:', error);
+               });
+         }
+
+
+         function openSearch() {
+            document.getElementById("myOverlay").style.display = "block";
+         }
+
+         function closeSearch() {
+            document.getElementById("myOverlay").style.display = "none";
+         }
+
+
+         // Function to hide notification messages after a specified time
+         function hideNotification() {
+            // Adjust the timeout duration (20000 milliseconds = 20 seconds)
+            setTimeout(function () {
+               document.getElementById('success-alert').style.display = 'none';
+               document.getElementById('error-alert').style.display = 'none';
+            }, 4000); // 20 seconds
+         }
+
+
+
+         function confirmDelete(deleteUrl, user_id) {
+            if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+               fetch(deleteUrl, {
+                  method: "POST",
+                  body: JSON.stringify({
+                     user_id: user_id
+                  }),
+                  headers: {
+                     "Content-Type": "application/json",
+                     "X-CSRFToken": '{{ csrf_token() }}',
+                  },
+               })
+                  .then(response => {
+                     if (response.ok) {
+                        // Logout the user by redirecting to the homepage
+                        window.location.href = "/";
+                     } else {
+                        // Handle the error case if needed
+                        console.error("Failed to delete profile.");
+                     }
+                  })
+                  .catch(error => {
+                     console.error("Error:", error);
+                  });
+            }
+         }
+
+         // Call the function when the page loads
+         window.onload = hideNotification;
+
+
+
+
+
+
+         $(document).ready(function () {
+            $('#markAllRead').click(function () {
+               $.ajax({
+                  url: '/mark_all_as_read',
+                  type: 'POST',
+                  data: {
+                     csrf_token: '{{ csrf_token() }}'
+                  },
+                  success: function (data) {
+                     // Update the notification count in the DOM
+                     $('#notificationCount').text('0');
+
+                     // Optionally, you can hide the bell icon if the count is zero
+                     if ($('#notificationCount').text() === '0') {
+                        $('#notMenu').css('display', 'none');
+                     }
+                  },
+                  error: function (error) {
+                     console.error('Failed to mark all notifications as read:', error);
+                  }
+               });
+            });
+         });
+
+
+         // dalle image generate hide upload text when image generated
+         $(document).ready(function () {
+            $("#generateBtn").click(function (event) {
+               event.preventDefault();
+
+               // Show the message and hide the image initially
+               $("#messageContainer").css("display", "block");
+               $("#generatedImage").css("display", "none");
+               $("#dalleGenerateForm").css("display", "none");
+
+               $.ajax({
+                  type: "POST",
+                  url: "/generate_img1",
+                  data: $("#generateForm").serialize(),
+                  success: function (response) {
+                     // Hide the message and display the generated image
+                     $("#messageContainer").css("display", "none");
+                     $("#generatedImage").css("display", "block");
+                     $("#generatedImage").attr("src", response.img);
+
+                     // Update the hidden input fields in the save form
+                     $("#dalleGenerateForm input[name='url']").val(response.img);
+                     $("#dalleGenerateForm input[name='paste_prompt']").val($(
+                        "#generateForm input[name='paste_prompt']").val());
+
+                     $("#dalleGenerateForm").css("display", "block");
+                  },
+                  error: function (error) {
+                     console.log("Error:", error);
+                  },
+                  dataType: 'json'
+               });
+            });
+         });
+
+         function showSpinner() {
+            // Display the spinner
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+         }
+      </script>
+</body>
+
+</html>

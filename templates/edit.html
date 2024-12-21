@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+       <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      />
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+      />
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+        <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/feed.css">
+
+    <style type="text/css">
+
+        body {
+  align-items: center;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+background: rgb(24,32,39);
+background: radial-gradient(circle, rgba(24,32,39,1) 33%, rgba(36,25,40,1) 54%);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Roboto', sans-serif;
+
+}
+
+.form {
+  margin-top: 100px;
+  background-color: #1f2029;
+  border-radius: 20px;
+  box-sizing: border-box;
+  height: auto;
+  padding: 20px;
+  width: 450px;
+}
+
+@media only screen and (max-width: 1024px) {
+
+  .form {
+  margin-top: 200px;
+  width: 450px;
+}
+}
+
+@media only screen and (max-width: 600px) {
+
+  .form {
+  margin-top: 150px;
+  width: 300px
+
+}
+}
+.title {
+  color: #eee;
+  font-family: sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  margin-top: 30px;
+}
+
+.subtitle {
+  color: #eee;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.input-container {
+  height: 50px;
+  position: relative;
+  width: 100%;
+
+}
+
+label{
+    color: #fff;
+
+}
+
+.ic1 {
+    margin: 50px 0;
+}
+
+.ic2 {
+    margin: 50px 0;
+}
+
+.input {
+  background-color: #303245;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  font-size: 18px;
+  height: 100%;
+  outline: 0;
+  padding: 4px 20px 0;
+  width: 100%;
+}
+
+
+.submit {
+  background-color: #08d;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  cursor: pointer;
+  font-size: 18px;
+  height: 50px;
+  margin-top: 38px;
+  // outline: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.submit:active {
+  background-color: #06b;
+}
+
+    </style>
+
+    <title>Console AI</title>
+  </head>
+  <body>
+
+      <!-- ================= Appbar ================= -->
+      <div class="d-flex align-items-center fixed-top shadow" style="min-height: 30px; z-index: 5; background-color: #1f2029;">
+
+         <div class="container-fluid">
+            <div class="row align-items-center">
+               <!-- search -->
+               <div class="col align-items-center mt-2 nav-search">
+                  <form class="d-none d-md-none d-lg-flex align-items-center">
+                     <div class="input-group">
+                        <input type="text" class="form-control border-0" id="myInput" onkeyup="myFunction()" placeholder="Search">
+                        <ul id="myUL" style="display: none;"></ul>
+                        <!--          <button type="submit" class="input-group-text border-0" style="background-color: rgba(225, 225, 225, 0.1);">
+                           <i class="fa-solid fa-magnifying-glass text-white"></i>
+                           </button> -->
+                     </div>
+                  </form>
+                  <ul class="col justify-content-start text-left d-flex d-md-none" style="list-style: none; padding-left: -10px!important; margin-left: -10px!important;">
+                     <li class="col-4">
+                        <i class="fas fa-solid fa-medal text-white"><span style="padding-left: 5px">{{total_likes}}</span></i>
+                     </li>
+                     <li class="col-4">
+                        <i class="fas fa-solid fa-trophy text-white"><span style="padding-left: 5px">{{total_trophies}}</span></i>        
+                     </li>
+                  </ul>
+               </div>
+               <!-- nav -->
+               <div class="col d-none d-md-flex justify-content-center" id="top-tab">
+                  <ul class="d-flex justify-content-between text-center pt-3" style="list-style: none">
+                     <li class="col-6 px-4">
+                        <i class="fas fa-solid fa-medal text-white"><span style="padding-left: 5px">{{total_likes}}</span></i>
+                        <p>Reward</p>
+                     </li>
+                     <li class="col-6 px-4">
+                        <i class="fas fa-solid fa-trophy text-white"><span style="padding-left: 5px">{{total_trophies}}</span></i>
+                        <p>Trophy</p>
+                     </li>
+                  </ul>
+               </div>
+               <!-- menus -->
+               <div class="col d-flex align-items-center justify-content-end my-3 my-md-0">
+                  <i class="fas fa-search" class="openBtn" onclick="openSearch()"></i>
+                  <!-- avatar -->
+                  <!-- <div class="align-items-center justify-content-center d-none d-xl-flex">
+                     <img src="https://source.unsplash.com/collection/happy-people" class="rounded-circle me-2" alt="avatar" style="width: 38px; height: 38px; object-fit: cover" />
+                     <p class="m-0">{{ current_user['name']}} </a></p>
+                     </div> -->
+                  <!-- main menu -->
+                  <!-- notifications -->
+                  <div class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2 notify" style="width: 38px; height: 38px" type="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                     <i class="fas fa-bell" id="markAllRead"><span id="notificationCount">{{ notification_count }}</span></i>
+                  </div>
+                  <!-- notifications dd -->
+                  <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="notMenu" style="width: 100%; max-width: 23em; max-height: 400px; overflow-y: auto;">
+                     <!-- header -->
+                     <li class="p-1">
+                        <div class="d-flex justify-content-between">
+                           <h2 class="text-white">Notifications</h2>
+                        </div>
+                     </li>
+                     <!-- news 5 -->
+                     <li class="my-2 p-1">
+                        <a href="#" class="d-flex align-items-center justify-content-evenly text-decoration-none text-white">
+                           <div class="d-flex align-items-center justify-content-evenly">
+                              <div>
+                                 {% for notification in notifications %}
+                        
+                        <div class="d-flex align-items-center">
+                        <div class="p-2">
+                        {% if notification.profile %}
+                        <img src="{{ notification.profile }}" alt="avatar" class="rounded-circle" style="width: 58px; height: 58px; object-fit: cover" />
+                        {% else %}
+                        <img src="https://source.unsplash.com/random/5" alt="avatar" class="rounded-circle" style="width: 58px; height: 58px; object-fit: cover" />
+                        {% endif %}
+                        </div>
+                        <div>
+                        {% if notification.is_read == '1' %}
+                        <div class="read">
+                        <p class="m-0">{{ notification.message }}</p>
+                        <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                        </div>
+                        {% else %}
+                        <div>
+                        <p class="m-0">{{ notification.message }}</p>
+                        <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                        </div>
+                        {% endif %}
+                        </div>
+                        </div>
+                        </a>
+                        <hr>
+                        {% endfor %}
+                        </div>
+                        </div>
+                       
+                     </li>
+                  </ul>
+                  <!-- secondary menu -->
+                  <div class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2" style="width: 38px; height: 38px" type="button" id="secondMenu" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                     <i class="fas fa-caret-down"></i>
+                  </div>
+                  <!-- secondary menu dd -->
+                  <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="secondMenu" style="width: 100%; max-width: 23em;">
+                     <!-- avatar -->
+                     <li class="dropdown-item p-1 rounded d-flex" type="button">
+                        {% if user.profile %}
+                        <img src="{{ user.profile }}" alt="avatar" class="rounded-circle me-2" style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+                        {% else %}
+                        <img src="https://source.unsplash.com/collection/happy-people" alt="avatar" class="rounded-circle me-2" style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+                        {% endif %}
+                        <div>
+                           <a href="../profile/{{ session['user_id']}}">
+                              <p class="m-0">{{ current_user['name']}} </p>
+                           </a>
+                           <a href="../profile/{{ session['user_id']}}">
+                              <p class="m-0 text-muted">See your profile</p>
+                           </a>
+                        </div>
+                     </li>
+                     <hr />
+                     <!-- feedback fas fa-exclamation-circle -->
+                     {% if session['user_id'] == 1 %}
+                     <a href="/ai-interf-social-admin">
+                        <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                           <i class="fa fa-pen text-white p-2 rounded-circle"></i>
+                           <div class="ms-3">
+                              <p class="m-0">Admin</p>
+                           </div>
+                        </li>
+                     </a>
+                     {% endif %}
+                     <a href="/feed">
+                        <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                           <i class="fa fa-home text-white p-2 rounded-circle"></i>
+                           <div class="ms-3">
+                              <p class="m-0">Home</p>
+                           </div>
+                        </li>
+                     </a>
+
+                                        <a href="/guide">
+              <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                <i class="fa fa-home text-white p-2 rounded-circle"></i>
+                <div class="ms-3">
+                  <p class="m-0">Guide</p>
+     
+                </div>
+              </li>
+            </a>
+                     <div class="show-mobile">
+                        <a href="/followed_users">
+                           <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                              <i class="fa fa-users text-white p-2 rounded-circle"></i>
+                              <div class="ms-3">
+                                 <p class="m-0">Circle</p>
+                                 <p class="m-0 text-muted fs-7">Check who you have followed</p>
+                              </div>
+                           </li>
+                        </a>
+                        <!-- <a href="/tokenbuy">
+                           <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                              <i class="fa fa-coins text-white p-2 rounded-circle"></i>
+                              <div class="ms-3">
+                                 <p class="m-0">Purchase Coin</p>
+                                 <p class="m-0 text-muted fs-7">Buy token to give rewards</p>
+                              </div>
+                           </li>
+                        </a> -->
+                        <hr />
+                     </div>
+                     <!-- options -->
+                     <li class="dropdown-item p-1 my-3 rounded" type="button">
+                        <ul class="navbar-nav">
+                           <li class="nav-item">
+                              <a href="{{ url_for('logout')}}" class="d-flex text-decoration-none text-white">
+                                 <i class="fas fa-cog p-2 rounded-circle"></i>
+                                 <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                                    <p class="m-0">Log Out</p>
+                                 </div>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+                  <!-- end -->
+               </div>
+            </div>
+            <!-----end row----->
+                  <div id="myOverlay" class="overlay">
+            <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
+            <div class="overlay-content">
+            <form class="d-flex align-items-center">
+              <div class="input-group">
+                  <input type="text" class="form-control border-0" id="moInput" onkeyup="myFunction1()" placeholder="Search">
+                <ul id="myMO" style="display: none;"></ul>
+
+              </div>
+          </form>
+            </div>
+          </div>
+
+
+
+         </div>
+      </div>
+
+          <form action="{{ url_for('edit_profile', user_id=user.user_id) }}" method="post" enctype="multipart/form-data">
+
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+
+ <div class="form">
+      <div class="title">Edit Profile</div>
+
+      <div class="input-container ic1">
+            <label for="name">Name</label>
+        <input id="name" class="input" name="name" type="text" value="{{user.name}}" />
+    
+      </div>
+
+      <div class="input-container ic2">
+                <label for="email">Email</label>
+        <input id="email" class="input" name="email" type="text" value="{{user.email}}" readonly />
+
+      </div>
+
+<!--             <div class="input-container ic2">
+                <label for="password">Password</label>
+        <input id="password" class="input" name="password" type="password" value="{{user.password}}"/>
+
+      </div> -->
+
+         <div class="input-container ic2">
+                <label for="file">Profile Image</label>
+           
+          <input type="file" class="input" name="profile" accept="image/*">
+
+      </div>
+
+      <button type="text" class="submit">Save</button>
+    </div>
+</form>
+
+
+                     <!-- Add this script to the bottom of your HTML template -->
+       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+      ></script>
+    <script src="https://cdn.jsdelivr.net/npm/clickboard@2/dist/clickboard.min.js"></script>
+    <script src="static/script.js"></script>
+
+    <script type="text/javascript">
+               // search query filter for content on social feed
+ function filterContentButtons1() {
+      var input, filter, content, paragraphs, i, txtValue;
+      input = document.getElementById("contentSearch1");
+      filter = input.value.toLowerCase();
+      content = document.getElementsByClassName("content");
+
+      for (i = 0; i < content.length; i++) {
+        paragraphs = content[i].getElementsByClassName("query");
+        var found = false;
+
+        for (var j = 0; j < paragraphs.length; j++) {
+          txtValue = paragraphs[j].textContent || paragraphs[j].innerText;
+          if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            found = true;
+            break;
+          }
+        }
+
+        if (found) {
+          content[i].style.display = "";
+        } else {
+          content[i].style.display = "none";
+        }
+      }
+    }
+
+    function showAllContent1() {
+      var content = document.getElementsByClassName("content");
+      for (var i = 0; i < content.length; i++) {
+        content[i].style.display = "";
+      }
+    }
+
+    // Initial call to show all content
+    showAllContent1();
+
+         
+         
+         // function to show search data top-nav bar
+         function myFunction() {
+         var input, filter, ul, li, a, i, txtValue;
+         input = document.getElementById("myInput");
+         filter = input.value.toUpperCase();
+         ul = document.getElementById("myUL");
+         
+         // Show or hide the list based on whether there is any input
+         if (filter.trim() === '') {
+         ul.style.display = "none";
+         return;
+         } else {
+         ul.style.display = "block";
+         }
+         
+         // Make an API call to your Flask app
+         fetch(`/api/users?q=${filter}`)
+         .then(response => response.json())
+         .then(data => {
+         // Update the list of names with the API response
+         ul.innerHTML = '';
+         data.forEach(user => {
+         ul.innerHTML += `<li><a href="/profile/${user.user_id}">${user.name}</a></li>`;
+         });
+         })
+         .catch(error => {
+         console.error('Error fetching data:', error);
+         });
+         }
+
+         function myFunction1() {
+          var input, filter, ul, li, a, i, txtValue;
+          input = document.getElementById("moInput");
+          filter = input.value.toUpperCase();
+          ul = document.getElementById("myMO");
+
+          // Show or hide the list based on whether there is any input
+          if (filter.trim() === '') {
+              ul.style.display = "none";
+              return;
+          } else {
+              ul.style.display = "block";
+          }
+
+          // Make an API call to your Flask app
+          fetch(`/api/users?q=${filter}`)
+          .then(response => response.json())
+          .then(data => {
+              // Update the list of names with the API response
+              ul.innerHTML = '';
+              data.forEach(user => {
+                ul.innerHTML += `<li><a href="/profile/${user.user_id}">${user.name}</a></li>`;
+              });
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+      }
+         
+         
+         function openSearch() {
+         document.getElementById("myOverlay").style.display = "block";
+         }
+         
+         function closeSearch() {
+         document.getElementById("myOverlay").style.display = "none";
+         }
+
+
+         $(document).ready(function() {
+  $('#markAllRead').click(function() {
+    $.ajax({
+      url: '/mark_all_as_read',
+      type: 'POST',
+      data: {
+        csrf_token: '{{ csrf_token() }}' 
+      },
+      success: function(data) {
+        // Update the notification count in the DOM
+        $('#notificationCount').text('0');
+
+        // Optionally, you can hide the bell icon if the count is zero
+        if ($('#notificationCount').text() === '0') {
+          $('#notMenu').css('display', 'none');
+        }
+      },
+      error: function(error) {
+        console.error('Failed to mark all notifications as read:', error);
+      }
+    });
+  });
+});
+    </script>
+    
+
+
+  </body>
+</html>
+    

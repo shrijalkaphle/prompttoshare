@@ -1,0 +1,92 @@
+grade,passion,earning,type,profession
+75,"Problem-solving, manual dexterity",52590,Outdoor,Plumber
+0,"Manual dexterity, technology",53880,Outdoor,Crane operator
+0,"Creative expression, design",52110,Outdoor,Graphic designer
+75,"Research, communication",52390,Outdoor,Paralegal
+90,"Science, caregiving",93830,Outdoor,Veterinarian
+80,"Helping others, problem-solving",151440,Outdoor,Dentist
+0,"Creative expression, fashion",24310,Outdoor,Cosmetologist
+80,"Science, nature",89780,Outdoor,Geologist
+90,"Science, caregiving",114850,Outdoor,Optometrist
+75,"Education, communication",61660,Outdoor,Teacher
+0,"Physical activity, performance",20000,Indoor,Dancer
+70,"Numbers, problem-solving",69350,Indoor,Accountant
+0,"Performance, storytelling",56000,Indoor,Actor
+70,"Design, problem-solving",79380,Indoor,Architect
+0,Creative expression,48960,Indoor,Artist
+0,"Physical activity, competition",50000,Indoor,Athlete
+0,"Writing, storytelling",61240,Indoor,Author
+0,"Helping others, driving",40520,Indoor,Bus driver
+0,"Cooking, creative expression",48460,Indoor,Chef
+0,"Creative expression, problem-solving",65000,Indoor,Designer
+90,"Helping others, problem-solving",201840,Indoor,Doctor
+80,"Problem-solving, technology",87040,Indoor,Engineer
+75,"Technology, problem-solving",56180,Indoor,Electrician
+0,"Helping others, bravery",50850,Indoor,Firefighter
+0,"Creative expression, fashion",24310,Indoor,Hairdresser
+80,"Problem-solving, justice",120910,Indoor,Lawyer
+70,"Research, organization",59050,Indoor,Librarian
+75,"Technology, problem-solving",43420,Indoor,Mechanic
+0,"Creative expression, performance",50000,Indoor,Musician
+75,"Helping others, caregiving",73300,Indoor,Nurse
+80,"Helping others, problem-solving",118620,Indoor,Optometrist
+0,"Helping others, bravery",65400,Indoor,Police officer
+0,"Sales, networking",50300,Indoor,Real estate agent
+0,"Teaching, mentorship",61660,Indoor,Teacher
+90,"Helping others, science",93830,Indoor,Veterinarian
+70,"Technology, problem-solving",73760,Indoor,Web developer
+0,"Writing, storytelling",61240,Indoor,Writer
+80,"Science, animals",67760,Indoor,Zoologist
+70,"Animals, caregiving",34750,Indoor,Zookeeper
+80,"Science, technology",104910,Indoor,Chemical engineer
+80,"Technology, problem-solving",87040,Indoor,Civil engineer
+75,"Technology, problem-solving",86550,Indoor,Computer programmer
+0,"Manual dexterity, problem-solving",39380,Indoor,Construction worker
+75,"Problem-solving, technology",93620,Indoor,Data analyst
+75,"Caregiving, science",79200,Indoor,Dental hygienist
+90,"Science, caregiving",187200,Indoor,Dermatologist
+0,"Creative expression, design",73470,Indoor,Designer
+75,"Science, caregiving",62470,Indoor,Dietitian
+80,"Problem-solving, data analysis",105020,Indoor,Economist
+0,"Technology, manual dexterity",26180,Indoor,Electrician apprentice
+80,"Science, sustainability",68910,Indoor,Environmental scientist
+0,"Organization, creativity",50600,Indoor,Event planner
+80,"Problem-solving, data analysis",85660,Indoor,Financial analyst
+0,"People skills, adaptability",56000,Indoor,Flight attendant
+0,"Customer service, food preparation",23840,Indoor,Food service worker
+0,"Creative expression, fashion",25710,Indoor,Hair stylist
+75,"Research, history",58620,Indoor,Historian
+80,"Problem-solving, people skills",116720,Indoor,Human resources manager
+0,"Creative expression, design",54310,Indoor,Interior designer
+0,"Writing, research",39870,Indoor,Journalist
+90,"Problem-solving, communication",122960,Indoor,Lawyer
+75,"Research, organization",59500,Indoor,Librarian
+80,"Creativity, data analysis",135030,Indoor,Marketing manager
+0,"Technology, manual dexterity",44420,Indoor,Mechanic
+0,"Caregiving, medical procedures",34800,Indoor,Medical assistant
+75,"Caregiving, science",73300,Indoor,Nurse
+80,"Caregiving, problem-solving",84200,Indoor,Occupational therapist
+80,"Caregiving, problem-solving",89440,Indoor,Physical therapist
+80,"Caregiving, science",112260,Indoor,Physician assistant
+0,"Technology, manual dexterity",52590,Indoor,Plumber
+0,"Public safety, problem-solving",65400,Indoor,Police officer
+80,"Caregiving, problem-solving",80370,Indoor,Psychologist
+0,"People skills, problem-solving",50300,Indoor,Real estate agent
+75,"Caregiving, science",73300,Indoor,Registered nurse
+0,"Communication, problem-solving",58510,Indoor,Sales representative
+90,"Research, science",93280,Indoor,Scientist
+75,"Technology, problem-solving",105590,Indoor,Software developer
+80,"Caregiving, communication",79120,Indoor,Speech-language pathologist
+90,"Science, manual dexterity",409665,Indoor,Surgeon
+75,"Technology, problem-solving",73760,Indoor,Web developer
+0,"Writing, research",62560,Indoor,Writer
+75,"Numbers, problem-solving",71550,Indoor,Accountant
+80,"Design, problem-solving",79380,Indoor,Architect
+0,"Cooking, creativity",49720,Indoor,Chef
+75,"Caregiving, science",76220,Indoor,Dental hygienist
+75,"Creativity, design",72520,Indoor,Designer
+80,"Science, problem-solving",91010,Indoor,Engineer
+0,"Public safety, physical activity",50850,Indoor,Firefighter
+0,"Creativity, manual dexterity",25710,Indoor,Hair stylist
+0,"Writing, research",43490,Indoor,Journalist
+85,"Helping others, science",128090,Both,Pharmacist

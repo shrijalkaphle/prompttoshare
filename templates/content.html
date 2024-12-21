@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+  <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="stylesheet" href="static/feed.css">
+  <link rel="stylesheet" href="static/beta.css">
+  <title>Content Creation</title>
+</head>
+
+<body>
+
+
+
+  <div class="row" style="height: 100vh;">
+    <div class="col-lg-3 col-md-12 col-12 side-bar">
+      <div class="history-bar">
+        <h4 class="text-center my-3">Training History</h4>
+        <ul>
+
+
+          <li class="history-item">
+            <p>We will show history data</p>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <!-- col-md-4 end -->
+    <div class="col-lg-9 col-md-12 col-12">
+      <div class="row">
+        <div class="site-mobile-menu site-navbar-target">
+          <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+              <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+          </div>
+          <div class="site-mobile-menu-body"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-11 col-12 search-data">
+          <div class='row'>
+
+
+            <form method="POST" action="/store_data">
+              <div class="col-md-6 col-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="user_id" value="{{ session['user_id'] }}">
+                <input type="hidden" name="chunks" id="chunksInput">
+                <input type="hidden" name="title" id="titleInput">
+                <input type="hidden" name="radioInput" id="radioInput">
+                <input type="hidden" name="post" id="postInput">
+                <input type="hidden" name="cat" id="catInput">
+                <button class="store" name="list-add" id="postButton">Post to Feed</button>
+              </div>
+              <div class="scrollable-section">
+                <div id="title"></div>
+                <div id="chunksContainer"></div>
+              </div>
+            </form>
+
+            <div class="col-md-6 col-6 text-right">
+
+              <button class="copy" id="copyButton">
+                <i class="fa-solid fa-copy" data-bs-toggle="tooltip" data-bs-placement="right"
+                  data-bs-original-title="Copy to Clickboard"></i>
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+      {% if form_disabled and not session['loggedin'] %}
+
+      <div class="pay-btn">
+
+        <a href="{{ url_for('register') }}">Pay</a>
+
+      </div>
+
+      {% elif session['loggedin'] %}
+
+
+      <section id="tabs1">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="tab-pane">
+                <div class="form-container">
+
+                  <form class="form" id="myForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="user_id" value="204">
+                    <input type="hidden" name="radioInput" id="radioInput">
+                    <input type="hidden" name="postInput" id="postInput">
+                    <div class="input-group">
+                      <div id="errorContainer" style="color:red!important"></div>
+                      <input type="text" id="postblank" name="post" placeholder="Enter your text.."
+                        value="{{ request.form.post }}" required>
+                    </div>
+                    <div class="input-group prompt-radio">
+                      <div class="radio-inputs">
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write about">
+                          <span class="name">Generate</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="search-container">
+
+                      <input type="text" id="radioSearch" onkeyup="filterRadioButtons()"
+                        placeholder="Search for prompts..">
+                    </div>
+                    <div class="input-group prompt-radio promt-over">
+                      <div class="radio-inputs">
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a instagram post">
+                          <span class="name">Write an instagram post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a tweet">
+                          <span class="name">Write a tweet</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a facebook post">
+                          <span class="name">Write a facebook post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a instagram post">
+                          <span class="name">Write a snapchat post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a linkedin post">
+                          <span class="name">Write a linkedin post</span>
+                        </label>
+
+                        {% for prompt in prompts %}
+                        <label class="radio">
+                          <input type="radio" name="selection" value="{{ prompt['name'] }}">
+                          <span class="name">{{ prompt['name'] }}</span>
+                        </label>
+                        {% endfor %}
+
+                      </div>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {% else %}
+
+      <section id="tabs1">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="tab-pane">
+                <div class="form-container">
+
+                  <form class="form" id="myForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="user_id" value="204">
+                    <input type="hidden" name="radioInput" id="radioInput">
+                    <input type="hidden" name="postInput" id="postInput">
+                    <div class="input-group">
+                      <div id="errorContainer" style="color:red!important"></div>
+                      <input type="text" id="postblank" name="post" placeholder="Enter your text.."
+                        value="{{ request.form.post }}" required>
+                    </div>
+                    <div class="input-group prompt-radio">
+                      <div class="radio-inputs">
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write about">
+                          <span class="name">Generate</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="search-container">
+
+                      <input type="text" id="radioSearch" onkeyup="filterRadioButtons()"
+                        placeholder="Search for prompts..">
+                    </div>
+
+                    <div class="input-group prompt-radio promt-over">
+                      <div class="radio-inputs">
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a instagram post">
+                          <span class="name">Write an instagram post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a tweet">
+                          <span class="name">Write a tweet</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a facebook post">
+                          <span class="name">Write a facebook post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a instagram post">
+                          <span class="name">Write a snapchat post</span>
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="selection" value="Write a linkedin post">
+                          <span class="name">Write a linkedin post</span>
+                        </label>
+
+                        {% for prompt in prompts %}
+                        <label class="radio">
+                          <input type="radio" name="selection" value="{{ prompt['name'] }}">
+                          <span class="name">{{ prompt['name'] }}</span>
+                        </label>
+                        {% endfor %}
+
+                      </div>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% endif %}
+    </div>
+  </div>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="static/script.js"></script>
+  <script>
+
+    // restrict posting of data to newsfeed
+
+    $(document).ready(function () {
+      $("#postButton").on("click", function () {
+        // Check if the chunksContainer is empty
+        var chunksContent = $("#chunksContainer").html().trim();
+        if (chunksContent === '') {
+          alert("Please add content to the chunks container before posting.");
+          return false; // Prevent form submission
+        }
+      });
+    });
+
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    const form = document.getElementById('myForm');
+
+
+    radioButtons.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        submitFormWithAjax();
+      });
+    });
+
+
+
+    $(document).ready(function () {
+      $('input[type=radio][name=selection]').on('click', function () {
+        // Trigger the form submission when a radio button is clicked
+        submitFormWithAjax();
+      });
+    });
+
+
+    function submitFormWithAjax() {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+
+
+      // Check if the 'post' field has data
+      const post = formData.get('post');
+      if (!post) {
+        displayErrorMessage('Please enter your text.');
+        return;
+      }
+
+      // Check if a radio button is selected
+      const selection = formData.get('selection');
+      if (!selection) {
+        displayErrorMessage('Please select a prompt.');
+        return;
+      }
+
+      // Remove any existing error messages
+      removeErrorMessage();
+
+
+      $.ajax({
+        url: '/feed_generate',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          console.log(data);
+          // Display the chunk data
+          displayChunkData(data.chunks);
+
+          // Get the selected radio button value
+          const radioValue = formData.get('selection');
+          const post = formData.get('post')
+
+          // Assign the radio button value to an input field
+          $('#radioInput').val(radioValue);
+          $('#postInput').val(post);
+
+        },
+        error: function (error) {
+          console.error(error);
+        }
+      });
+    }
+
+
+
+    function displayErrorMessage(message) {
+      const errorContainer = document.getElementById('errorContainer');
+      errorContainer.innerHTML = '<p class="error">' + message + '</p>';
+    }
+
+    function removeErrorMessage() {
+      const errorContainer = document.getElementById('errorContainer');
+      errorContainer.innerHTML = '';
+    }
+
+
+    function displayChunkData(chunks) {
+
+      // Clear previous content
+      $('#chunksContainer').html('');
+      $('#title').html('');
+
+      // Display the chunk data in the chunksContainer
+      chunks.forEach(function (chunk) {
+        $('#chunksContainer').append('<p>' + chunk + '</p>');
+      });
+
+      // Store the chunk data in the hidden input field
+      $('#chunksInput').val(JSON.stringify(chunks));
+    }
+
+
+
+    // Disable form submission on Enter key press
+    document.getElementById("myForm").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+      }
+    });
+
+
+
+
+    // Function to filter radio buttons based on the search query
+    function filterRadioButtons() {
+      var input, filter, radios, span, i, txtValue;
+      input = document.getElementById("radioSearch");
+      filter = input.value.toLowerCase();
+      radios = document.getElementsByClassName("radio");
+
+      for (i = 0; i < radios.length; i++) {
+        span = radios[i].getElementsByTagName("span")[0];
+        txtValue = span.textContent || span.innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+          radios[i].style.display = "";
+        } else {
+          radios[i].style.display = "none";
+        }
+      }
+    }
+
+    // Function to show all radio buttons at the start
+    function showAllRadioButtons() {
+      var radios = document.getElementsByClassName("radio");
+      for (var i = 0; i < radios.length; i++) {
+        radios[i].style.display = "";
+      }
+    }
+
+
+
+
+    // Disable form submission on Enter key press
+    document.getElementById("myForm").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+      }
+    });
+
+    function copyData() {
+      // Select the content to copy (chunksContainer)
+      const chunksContainer = document.getElementById('chunksContainer');
+
+      // Create a range to select the content
+      const range = document.createRange();
+      range.selectNode(chunksContainer);
+
+      // Select the content
+      window.getSelection().removeAllRanges(); // Clear any existing selections
+      window.getSelection().addRange(range);
+
+      // Try to copy the selected content to the clipboard
+      try {
+        document.execCommand('copy');
+        alert('Copied to clipboard');
+      } catch (err) {
+        console.error('Unable to copy: ', err);
+        alert('Copy failed. Please try again.');
+      }
+
+      // Clear the selection
+      window.getSelection().removeAllRanges();
+    }
+
+    // Add an event listener to the copy button
+    const copyButton = document.getElementById('copyButton');
+    copyButton.addEventListener('click', copyData);
+
+  </script>
+</body>
+
+</html>

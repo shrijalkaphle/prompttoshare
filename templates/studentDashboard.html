@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+     <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="static/style.css">
+       <link rel="stylesheet" href="static/beta.css">
+
+    <title>Beta2</title>
+  </head>
+  <body>
+
+
+    <section id="tabs">
+  <div class="container">
+    <h6 class="section-title h1">Counselai</h6>
+    <div class="row justify-content-center">
+      <div class="col-xs-12">
+        <nav>
+          <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Student</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Teacher</a>
+      
+          </div>
+        </nav>
+        <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+
+ <div class="form-container">
+  <form class="form" method="POST" action="/process">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="input-group">
+      <label>What is your level of education, high school, college, university?</label>
+      <select class="form-select" name='grade' aria-label="Default select example">
+        <option value="I am in high school">High School</option>
+        <option value="I am in college">College</option>
+        <option value="I am in university">University</option>
+      </select>
+    </div>
+
+    <hr class="line"> 
+
+    <div class="input-group">
+      <label>What subject would you like to learn about?</label>
+       <select class="form-select" name='subject' aria-label="Default select example">
+        <option value="I want to learn computer science">Computer Science</option>
+        <option value="I want to learn business">Business</option>
+        <option value="I want to learn nursing">Nursing</option>
+      </select>
+      <!--   <textarea id="focus" name="focus" rows="4" cols="160" required></textarea> -->
+    </div>
+
+     <hr class="line"> 
+
+    <section>
+      
+    <header><h1>Topic</h1></header>
+
+        <a href="{{ url_for('topic1')}}"><span class="tag">Background and Experience</span></a>
+    
+        <a href="{{ url_for('topic2')}}"><span class="tag">Career Goals</span></a>
+    
+        <a href="{{ url_for('topic3')}}"><span class="tag">Company Knowledge</span></a>
+    
+        <a href="{{ url_for('topic4')}}"><span class="tag">Technical Skills</span></a>
+    
+        <a href="{{ url_for('topic5')}}"><span class="tag">Interpersonal Skills</span></a>
+    
+        <a href="{{ url_for('topic6')}}"><span class="tag">Adaptability</span></a>
+    
+        <a href="{{ url_for('topic7')}}"><span class="tag">problem Solving Skills</span></a>
+    
+
+</section>
+
+
+    <button name="form-add" class="sign">Generate</button>
+  </form>
+
+
+</div>
+            
+          </div>
+          <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+
+           <div class="form-container">
+  <form class="form" method="POST" action="/process">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="input-group">
+      <label>What is your level of education, high school, college, university?</label>
+      <select class="form-select" name='grade' aria-label="Default select example">
+        <option value="I am in high school">High School</option>
+        <option value="I am in college">College</option>
+        <option value="I am in university">University</option>
+      </select>
+    </div>
+
+    <hr class="line"> 
+
+    <div class="input-group">
+      <label>What subject would you like to learn about?</label>
+       <select class="form-select" name='subject' aria-label="Default select example">
+        <option value="I want to learn computer science">Computer Science</option>
+        <option value="I want to learn business">Business</option>
+        <option value="I want to learn nursing">Nursing</option>
+      </select>
+      <!--   <textarea id="focus" name="focus" rows="4" cols="160" required></textarea> -->
+    </div>
+
+     <hr class="line"> 
+
+    <section>
+      
+    <header><h1>Topic</h1></header>
+
+        <a href="{{ url_for('topic1')}}" class="active"><span class="tag">Background and Experience</span></a>
+    
+        <a href="{{ url_for('topic2')}}"><span class="tag">Career Goals</span></a>
+    
+        <a href="{{ url_for('topic3')}}"><span class="tag">Company Knowledge</span></a>
+    
+        <a href="{{ url_for('topic4')}}"><span class="tag">Technical Skills</span></a>
+    
+        <a href="{{ url_for('topic5')}}"><span class="tag">Interpersonal Skills</span></a>
+    
+        <a href="{{ url_for('topic6')}}"><span class="tag">Adaptability</span></a>
+    
+        <a href="{{ url_for('topic7')}}"><span class="tag">problem Solving Skills</span></a>
+    
+
+</section>
+
+
+    <button name="form-add" class="sign">Generate</button>
+  </form>
+
+
+</div>
+          </div>
+   
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    
+     <script src="static/script.js"></script>
+
+     <script>
+        function checkWordCount() {
+            var input = document.getElementById("myInput").value;
+            var words = input.split(" ");
+            
+            if (words.length === 30) {
+                var truncatedWords = words.slice(0, 3); // Take only the first three words
+                document.getElementById("myInput").value = truncatedWords.join(" ");
+            }
+        }
+    </script>
+
+
+  </body>
+</html>
+
+
+
+
+    
+ 
+
+
+
+
+
+         
+

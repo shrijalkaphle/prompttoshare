@@ -1,0 +1,1379 @@
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="csrf-token" content="{{ csrf_token() }}">
+      <!-- fontawesome -->
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+         integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+         />
+      <!-- bootstrap -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+      <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+         crossorigin="anonymous"
+         />
+      <!-- main style --> 
+      <link rel="stylesheet" href="static/style.css">
+      <link rel="stylesheet" href="static/feed.css">
+      <link rel="stylesheet" href="static/beta.css">
+      <title>NewsFeed</title>
+   </head>
+   <body class="postion-relative">
+      <!-- ================= Appbar ================= -->
+      <div
+         class="d-flex align-items-center fixed-top shadow"
+         style="min-height: 56px; z-index: 5"
+         >
+         <div class="container-fluid">
+            <div class="row align-items-center">
+               <!-- search -->
+               <div class="col d-flex align-items-center">
+                  <!-- logo -->
+                  <!-- <i class="fab fa-facebook text-primary" style="font-size: 3rem"></i> -->
+               </div>
+               <!-- secondary menu -->
+               <div
+                  class="
+                  rounded-circle
+                  p-1
+                  right-menu-icon
+                  d-flex
+                  align-items-center
+                  justify-content-center
+                  mx-2
+                  "
+                  style="width: 38px; height: 38px"
+                  type="button"
+                  id="secondMenu"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  data-bs-auto-close="outside"
+                  >
+                  <i class="fas fa-caret-down"></i>
+               </div>
+               <!-- secondary menu dd -->
+               <ul
+                  class="burger-menu-content dropdown-menu border-0 shadow p-3"
+                  aria-labelledby="secondMenu"
+                  style="width: 23em"
+                  >
+                  <!-- avatar -->
+                  <li class="dropdown-item p-1 rounded d-flex" type="button">
+                     <img
+                        src="https://source.unsplash.com/collection/happy-people"
+                        alt="avatar"
+                        class="rounded-circle me-2"
+                        style="width: 45px; height: 45px; object-fit: cover"
+                        />
+                     <div>
+                        <p class="m-0">Anonymous 
+                        </p>
+                     </div>
+                  </li>
+                  <hr />
+                  {% if session['loggedin'] %}
+                  <!-- options -->
+                  <li class="dropdown-item p-1 my-3 rounded" type="button">
+                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                           <a
+                              href="{{ url_for('logout')}}"
+                              class="d-flex text-decoration-none text-white"
+                              >
+                              <i class="fas fa-cog p-2 rounded-circle"></i>
+                              <div
+                                 class="
+                                 ms-3
+                                 d-flex
+                                 justify-content-between
+                                 align-items-center
+                                 w-100
+                                 "
+                                 >
+                                 <p class="m-0">Log Out</p>
+                              </div>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  {% else %}
+                  <a href="{{ url_for('login')}}">
+                     <li
+                        class="dropdown-item p-1 rounded d-flex align-items-center"
+                        type="button"
+                        >
+                        <i
+                           class="fa fa-users text-white p-2 rounded-circle"
+                           ></i>
+                        <div class="ms-3">
+                           <p class="m-0">Login</p>
+                        </div>
+                     </li>
+                  </a>
+                  <a href="{{ url_for('register')}}">
+                     <li
+                        class="dropdown-item p-1 rounded d-flex align-items-center"
+                        type="button"
+                        >
+                        <i
+                           class="fa fa-users text-white p-2 rounded-circle"
+                           ></i>
+                        <div class="ms-3">
+                           <p class="m-0">Register</p>
+                        </div>
+                     </li>
+                  </a>
+                  <hr />
+                  {% endif %}
+               </ul>
+               <!-- end -->
+            </div>
+         </div>
+      </div>
+      <!-- Tab content -->
+      <div class="tab-content">
+         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <!-- ================= Main ================= -->
+            <div class="container-fluid">
+               <div class="row justify-content-evenly">
+                  <!-- ================= Sidebar ================= -->
+                  <div class="col-12 col-lg-3">
+                     <div
+                        class="d-none d-xxl-block h-100 fixed-top overflow-hidden scrollbar"
+                        style="max-width: 360px; width: 100%; z-index: 4"
+                        >
+                        <ul
+                           class="navbar-nav mt-4 ms-3 d-flex flex-column pb-5 mb-5"
+                           style="padding-top: 56px"
+                           >
+                           <!-- top -->
+                           <!-- avatar -->
+                           <li class="dropdown-item p-1 rounded">
+                              <div href="#" class="d-flex align-items-center text-decoration-none text-white">
+                                 <div class="p-2">
+                                    <img
+                                       src="https://source.unsplash.com/collection/happy-people"
+                                       alt="avatar"
+                                       class="rounded-circle me-2"
+                                       style="width: 38px; height: 38px; object-fit: cover"
+                                       />
+                                    Anonymous
+                                 </div>
+                                 <div>
+                                 </div>
+                              </div>
+                           </li>
+                           <!-- top 1 -->
+                           <li class="dropdown-item p-1 rounded">
+                              <a
+                                 href="/followed_users"
+                                 class="
+                                 d-flex
+                                 align-items-center
+                                 text-decoration-none text-white
+                                 "
+                                 >
+                                 <div class="p-2">
+                                    <i class="fa fa-users" aria-hidden="true" style="font-size: 20px;"></i>
+                                 </div>
+                                 <div>
+                                    <p class="m-0">Circle</p>
+                                 </div>
+                              </a>
+                           </li>
+                           <!-- <li class="dropdown-item p-1 rounded">
+                              <a
+                                 href="/tokenbuy"
+                                 class="
+                                 d-flex
+                                 align-items-center
+                                 text-decoration-none text-white
+                                 "
+                                 >
+                                 <div class="p-2">
+                                    <i class="fa fa-coins" aria-hidden="true" style="font-size: 20px;"></i>
+                                 </div>
+                                 <div>
+                                    <p class="m-0">Purchase Coins</p>
+                                 </div>
+                              </a>
+                           </li> -->
+                        </ul>
+                        <hr class="m-0" />
+                        <!-- terms -->
+                        <div class="p-2 mt-5">
+                           <p class="text-muted fs-7">
+                              Privacy &#8226; AI-Interf © 2023
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- ================= Timeline ================= -->
+                  <div class="col-12 col-lg-6 pb-5">
+                     <h1 class='text-white text-center header-feed'> Prompt. Share. Earn!</h1>
+                     <div class="d-flex flex-column justify-content-center w-100 mx-auto" style="max-width: 680px">
+                        <div class="col d-flex justify-content-center" id="top-tab">
+                           <ul class="nav justify-content-center" id="myTabs" role="tablist">
+                              <li class="nav-item">
+                                 <a class="nav-link active" id="feed-tab" data-bs-toggle="tab" href="#feed" role="tab" aria-controls="feed" aria-selected="true"><i class="fas fa-home"></i></a>
+                              </li>
+                              <li class="nav-item">
+                                 <a class="nav-link" id="insta-tab" data-bs-toggle="tab" href="#insta" role="tab" aria-controls="insta" aria-selected="false"><i class="fab fa-instagram"></i></a>
+                              </li>
+                              <li class="nav-item">
+                                 <a class="nav-link" id="fb-tab" data-bs-toggle="tab" href="#fb" role="tab" aria-controls="fb" aria-selected="false"><i class="fab fa-facebook"></i></a>
+                              </li>
+                              <li class="nav-item">
+                                 <a class="nav-link" id="tweet-tab" data-bs-toggle="tab" href="#tweet" role="tab" aria-controls="tweet" aria-selected="false"><i class="fab fa-twitter"></i></a>
+                              </li>
+                              <li class="nav-item">
+                                 <a class="nav-link" id="link-tab" data-bs-toggle="tab" href="#link" role="tab" aria-controls="link" aria-selected="false"><i class="fab fa-linkedin"></i></a>
+                              </li>
+                           </ul>
+                        </div>
+                        <div class="tab-content">
+                           <div class="tab-pane fade show active" id="feed" role="tabpanel" aria-labelledby="feed-tab">
+                              <!--------------------------------feed posts -------------------------------------->
+                              <!-- p 1 -->
+                              {% if post %}
+                              {% for data in post %}
+                              {% if data.category == 'extra' or data.category == 'Write about' %}
+                              <div class="p-4 rounded shadow mt-3m post-bg">
+                                 <!-- author -->
+                                 <div class="d-flex justify-content-between">
+                                    <!-- avatar -->
+                                    <div class="d-flex">
+                                       {% if data.profile %}
+                                       <img
+                                          src="{{data.profile}}"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% else %}
+                                       <img
+                                          src="https://source.unsplash.com/collection/happy-people"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% endif %}
+                                       <div>
+                                          <p class="m-0 fw-bold">{{data.name}}
+                                             {% if data.tool %}
+                                             <span>({{ data.tool }})</span>
+                                             {% endif %}
+                                          </p>
+                                          <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!----------------------------post content----------------------------------->
+                                 <div class="my-3">
+                                    <!-- content -->
+                                    <div>
+                                       {% if data.file %}
+                                       <img
+                                          src="{{ data.file }}"
+                                          alt="post image"
+                                          class="img-fluid rounded"
+                                          />
+                                       {% endif %}   
+                                       {% for c in data.chunk %}
+                                       <p >{{ c }}</p>
+                                       {% endfor %}
+                                    </div>
+                                    <!--close-->
+                                    <div>
+                                    </div>
+                                    <!-- likes & comments -->
+                                    <div class="post__comment mt-3 position-relative">
+                                       <div
+                                          class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          "
+                                          style="height: 50px; z-index: 5"
+                                          >
+                                          <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                       </div>
+                                       <!-- comments start-->
+                                       <div class="accordion" id="accordion{{ data.id }}">
+                                          <div class="accordion-item border-0">
+                                             <div class="d-flex justify-content-around count">
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Reward"> <span id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                                   <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                                </a>
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Trophy"> <span id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                                </a>
+                                                <div
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   "
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#collapsePost{{data.id}}"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapsePost{{data.id}}"
+                                                   >
+                                                   <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Comments"> {{data.comment_count}}</i>
+                                                </div>
+                                             </div>
+                                             <!-- comment expand -->
+                                             <div
+                                                id="collapsePost{{data.id}}"
+                                                class="accordion-collapse collapse"
+                                                aria-labelledby="heading{{data.id}}"
+                                                data-bs-parent="#accordion{{data.id}}"
+                                                >
+                                                <hr />
+                                                <div class="accordion-body">
+                                                   <!-- comment 1 -->
+                                                   {% for c in comment %}
+                                                   {% if c.post_id == data.id %}
+                                                   <div class="d-flex align-items-center my-1">
+                                                      <!-- avatar -->
+                                                      <img
+                                                         src="https://source.unsplash.com/collection/happy-people"
+                                                         alt="avatar"
+                                                         class="rounded-circle me-2"
+                                                         style="
+                                                         width: 38px;
+                                                         height: 38px;
+                                                         object-fit: cover;
+                                                         "
+                                                         />
+                                                      <!-- comment text -->
+                                                      <div class="p-3 rounded comment__input w-100">
+                                                         <!-- comment menu of author -->
+                                                         <div class="d-flex justify-content-end">
+                                                            <i
+                                                               class="fas fa-ellipsis-h text-blue pointer"
+                                                               id="post1CommentMenuButton"
+                                                               data-bs-toggle="dropdown"
+                                                               aria-expanded="false"
+                                                               ></i>
+                                                            <ul
+                                                               class="dropdown-menu border-0 shadow"
+                                                               aria-labelledby="post1CommentMenuButton"
+                                                               >
+                                                               <li class="d-flex align-items-center">
+                                                                  <a
+                                                                     class="
+                                                                     dropdown-item
+                                                                     d-flex
+                                                                     justify-content-around
+                                                                     align-items-center
+                                                                     fs-7
+                                                                     "
+                                                                     href="#"
+                                                                     >
+                                                                  Edit Comment</a
+                                                                     >
+                                                               </li>
+                                                               <li class="d-flex align-items-center">
+                                                                  <a
+                                                                     class="
+                                                                     dropdown-item
+                                                                     d-flex
+                                                                     justify-content-around
+                                                                     align-items-center
+                                                                     fs-7
+                                                                     "
+                                                                     href="#"
+                                                                     >
+                                                                  Delete Comment</a
+                                                                     >
+                                                               </li>
+                                                            </ul>
+                                                         </div>
+                                                         <p class="fw-bold m-0">{{ c.name }}</a></p>
+                                                         <p class="m-0 fs-7 p-2 rounded">
+                                                            {{ c.text }}
+                                                         </p>
+                                                      </div>
+                                                   </div>
+                                                   {% endif %}
+                                                   {% endfor %}
+                                                   <!-- create comment -->
+                                                   <form id="comment-form" class="d-flex my-1" method="POST" action="{{ url_for('create_comment', post_id=data.id) }}">
+                                                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                      <!-- avatar -->
+                                                      <div>
+                                                         <img
+                                                            src="https://source.unsplash.com/collection/happy-people"
+                                                            alt="avatar"
+                                                            class="rounded-circle me-2"
+                                                            style="
+                                                            width: 38px;
+                                                            height: 38px;
+                                                            object-fit: cover;
+                                                            "
+                                                            />
+                                                      </div>
+                                                      <!-- input -->
+                                                      <input
+                                                         type="text"
+                                                         name='text'
+                                                         class="form-control border-0 rounded-pill "
+                                                         placeholder="Write a comment"
+                                                         />
+                                                      <button type="submit" class="btn btn-primary">Add</button>
+                                                   </form>
+                                                   <!-- end -->
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- end -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                           </div>
+                           <!-----end tab-pane feed--->
+                           <div class="tab-pane fade" id="insta" role="tabpanel" aria-labelledby="insta-tab">
+                              <!--------------------------------insta posts -------------------------------------->
+                              <!-- p 1 -->
+                              {% if post %}
+                              {% for data in post %}
+                              {% if data.category == 'Write a instagram post' %}
+                              <div class="p-4 rounded shadow mt-3m post-bg">
+                                 <!-- author -->
+                                 <div class="d-flex justify-content-between">
+                                    <!-- avatar -->
+                                    <div class="d-flex">
+                                       {% if data.profile %}
+                                       <img
+                                          src="{{data.profile}}"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% else %}
+                                       <img
+                                          src="https://source.unsplash.com/collection/happy-people"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% endif %}
+                                       <div>
+                                          <p class="m-0 fw-bold">{{data.name}}
+                                             {% if data.tool %}
+                                             <span>({{ data.tool }})</span>
+                                             {% endif %}
+                                          </p>
+                                          <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!----------------------------post content----------------------------------->
+                                 <div class="my-3">
+                                    <!-- content -->
+                                    <div>
+                                       {% if data.file %}
+                                       <img
+                                          src="{{ data.file }}"
+                                          alt="post image"
+                                          class="img-fluid rounded"
+                                          />
+                                       {% endif %}   
+                                       {% for c in data.chunk %}
+                                       <p >{{ c }}</p>
+                                       {% endfor %}
+                                    </div>
+                                    <!--close-->
+                                    <!-- likes & comments -->
+                                    <div class="post__comment mt-3 position-relative">
+                                       <div
+                                          class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          "
+                                          style="height: 50px; z-index: 5"
+                                          >
+                                          <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                       </div>
+                                       <!-- comments start-->
+                                       <div class="accordion" id="accordion{{ data.id }}">
+                                          <div class="accordion-item border-0">
+                                             <!-- comment & like bar -->
+                                             <div class="d-flex justify-content-around">
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Reward"> <span id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                                   <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                                </a>
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Trophy"> <span id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                                </a>
+                                                <div
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   "
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#collapsePost{{data.id}}"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapsePost{{data.id}}"
+                                                   >
+                                                   <i class="fas fa-comment-alt me-3">{{data.comment_count}}</i>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- end -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                           </div>
+                           <!-----end tab-pane insta--->
+                           <div class="tab-pane fade" id="fb" role="tabpanel" aria-labelledby="fb-tab">
+                              <!--------------------------------fb posts -------------------------------------->
+                              <!-- p 1 -->
+                              {% if post %}
+                              {% for data in post %}
+                              {% if data.category == 'Write a facebook post' %}
+                              <div class="p-4 rounded shadow mt-3m post-bg">
+                                 <!-- author -->
+                                 <div class="d-flex justify-content-between">
+                                    <!-- avatar -->
+                                    <div class="d-flex">
+                                       {% if data.profile %}
+                                       <img
+                                          src="{{data.profile}}"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% else %}
+                                       <img
+                                          src="https://source.unsplash.com/collection/happy-people"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% endif %}
+                                       <div>
+                                          <a href="#">
+                                             <p class="m-0 fw-bold">{{ data.name }}
+                                                {% if data.tool %}
+                                                <span>({{ data.tool }})</span>
+                                                {% endif %}
+                                             </p>
+                                          </a>
+                                          <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!----------------------------post content----------------------------------->
+                                 <div class="my-3">
+                                    <!-- content -->
+                                    <div>
+                                       {% if data.file %}
+                                       <img
+                                          src="{{ data.file }}"
+                                          alt="post image"
+                                          class="img-fluid rounded"
+                                          />
+                                       {% endif %}   
+                                       {% for c in data.chunk %}
+                                       <p >{{ c }}</p>
+                                       {% endfor %}
+                                    </div>
+                                    <!--close-->
+                                    <!-- likes & comments -->
+                                    <div class="post__comment mt-3 position-relative">
+                                       <div
+                                          class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          "
+                                          style="height: 50px; z-index: 5"
+                                          >
+                                          <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                       </div>
+                                       <!-- comments start-->
+                                       <div class="accordion" id="accordion{{ data.id }}">
+                                          <div class="accordion-item border-0">
+                                             <div class="d-flex justify-content-around count">
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   "
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Reward"> <span id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                                   <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                                </a>
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Trophy"> <span id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                                </a>
+                                                <div
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   "
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#collapsePost{{data.id}}"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapsePost{{data.id}}"
+                                                   >
+                                                   <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Comments"> {{data.comment_count}}</i>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- end -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                           </div>
+                           <!-----end tab-pane fb--->
+                           <div class="tab-pane fade" id="tweet" role="tabpanel" aria-labelledby="tweet-tab">
+                              <!--------------------------------tweet posts -------------------------------------->
+                              <!-- p 1 -->
+                              {% if post %}
+                              {% for data in post %}
+                              {% if data.category == 'Write a tweet' %}
+                              <div class="p-4 rounded shadow mt-3m post-bg">
+                                 <!-- author -->
+                                 <div class="d-flex justify-content-between">
+                                    <!-- avatar -->
+                                    <div class="d-flex">
+                                       {% if data.profile %}
+                                       <img
+                                          src="{{data.profile}}"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% else %}
+                                       <img
+                                          src="https://source.unsplash.com/collection/happy-people"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% endif %}
+                                       <div>
+                                          <p class="m-0 fw-bold">{{data.name}}
+                                             {% if data.tool %}
+                                             <span>({{ data.tool }})</span>
+                                             {% endif %}
+                                          </p>
+                                          <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!----------------------------post content----------------------------------->
+                                 <div class="my-3">
+                                    <!-- content -->
+                                    <div>
+                                       {% if data.file %}
+                                       <img
+                                          src="{{ data.file }}"
+                                          alt="post image"
+                                          class="img-fluid rounded"
+                                          />
+                                       {% endif %}   
+                                       {% for c in data.chunk %}
+                                       <p >{{ c }}</p>
+                                       {% endfor %}
+                                    </div>
+                                    <!--close-->
+                                    <!-- likes & comments -->
+                                    <div class="post__comment mt-3 position-relative">
+                                       <div
+                                          class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          "
+                                          style="height: 50px; z-index: 5"
+                                          >
+                                          <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                       </div>
+                                       <!-- comments start-->
+                                       <div class="accordion" id="accordion{{ data.id }}">
+                                          <div class="accordion-item border-0">
+                                             <div class="d-flex justify-content-around count">
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   "
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Reward"> <span id="like-count-{{data.id}}"> {{ data.like_count }}</span></i>
+                                                   <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                                </a>
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Trophy"> <span id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                                </a>
+                                                <div
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   "
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#collapsePost{{data.id}}"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapsePost{{data.id}}"
+                                                   >
+                                                   <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Comments"> {{data.comment_count}}</i>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- end -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                           </div>
+                           <!-----end tab-pane twitter--->
+                           <div class="tab-pane fade" id="link" role="tabpanel" aria-labelledby="link-tab">
+                              <!--------------------------------link posts -------------------------------------->
+                              <!-- p 1 -->
+                              {% if post %}
+                              {% for data in post %}
+                              {% if data.category == 'Write a linkedin post' %}
+                              <div class="p-4 rounded shadow mt-3m post-bg">
+                                 <!-- author -->
+                                 <div class="d-flex justify-content-between">
+                                    <!-- avatar -->
+                                    <div class="d-flex">
+                                       {% if data.profile %}
+                                       <img
+                                          src="{{data.profile}}"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% else %}
+                                       <img
+                                          src="https://source.unsplash.com/collection/happy-people"
+                                          alt="avatar"
+                                          class="rounded-circle me-2"
+                                          style="width: 38px; height: 38px; object-fit: cover"
+                                          />
+                                       {% endif %}
+                                       <div>
+                                          <p class="m-0 fw-bold">{{data.name}}
+                                             {% if data.tool %}
+                                             <span>({{ data.tool }})</span>
+                                             {% endif %}
+                                          </p>
+                                          <!-- <span class="text-muted fs-7">July 17 at 1:23 pm</span> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <!----------------------------post content----------------------------------->
+                                 <div class="my-3">
+                                    <!-- content -->
+                                    <div>
+                                       {% if data.file %}
+                                       <img
+                                          src="{{ data.file }}"
+                                          alt="post image"
+                                          class="img-fluid rounded"
+                                          />
+                                       {% endif %}   
+                                       {% for c in data.chunk %}
+                                       <p >{{ c }}</p>
+                                       {% endfor %}
+                                    </div>
+                                    <!--close-->
+                                    <!-- likes & comments -->
+                                    <div class="post__comment mt-3 position-relative">
+                                       <div
+                                          class="
+                                          d-flex
+                                          align-items-center
+                                          top-0
+                                          start-0
+                                          position-absolute
+                                          "
+                                          style="height: 50px; z-index: 5"
+                                          >
+                                          <!--  <p class="m-0 text-muted fs-7 like-count"> {{ data.like_count }}</p> -->
+                                       </div>
+                                       <!-- comments start-->
+                                       <div class="accordion" id="accordion{{ data.id }}">
+                                          <div class="accordion-item border-0">
+                                             <div class="d-flex justify-content-around count">
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   "
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-medal" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Reward"> <span id="like-count-{{data.id}}">{{ data.like_count }}</span></i>
+                                                   <!-- 
+                                                      <i class="fas fa-thumbs-up me-3 like-button" data-post="{{ data.id }}"></i>
+                                                      <p class="m-0">Like</p> -->
+                                                </a>
+                                                <a href="/login" 
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted"
+                                                   >
+                                                   <!-- <i class="fas fa-thumbs-up me-3"></i> -->
+                                                   <i class="fas fa-solid fa-trophy" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Trophy"> <span id="trophy-count-{{data.id}}">{{ data.trophy_count }}</span></i>
+                                                </a>
+                                                <div
+                                                   class="
+                                                   dropdown-item
+                                                   rounded
+                                                   d-flex
+                                                   justify-content-center
+                                                   align-items-center
+                                                   pointer
+                                                   text-muted
+                                                   p-1
+                                                   "
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#collapsePost{{data.id}}"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapsePost{{data.id}}"
+                                                   >
+                                                   <i class="fas fa-comment-alt me-3" data-bs-toggle="tooltip"
+                                                      data-bs-placement="right"
+                                                      data-bs-original-title="Comments"> {{data.comment_count}}</i>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- end -->
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                           </div>
+                           <!-----end tab-pane linkedin--->
+                        </div>
+                        <!---end tab-contain--->
+                     </div>
+                  </div>
+                  <!-- ================= Chatbar ================= -->
+                  <div class="col-12 col-lg-3">
+                     <div
+                        class="
+                        d-none d-xxl-block
+                        h-100
+                        fixed-top
+                        end-0
+                        overflow-hidden
+                        scrollbar
+                        "
+                        style="
+                        max-width: 360px;
+                        width: 100%;
+                        z-index: 4;
+                        padding-top: 56px;
+                        left: initial !important;
+                        "
+                        >
+                        <div class="p-3 mt-4">
+                           <!-- sponsors -->
+                           <h5 class="text-muted">Sponsored Ads</h5>
+                           <!-- s 1 -->
+                           <li class="dropdown-item my-2 d-flex justify-content-between">
+                              <!-- img -->
+                              <a
+                                 href="https://www.ai-interf.com/" target='_blank'
+                                 class="
+                                 d-flex
+                                 align-items-center
+                                 text-decoration-none
+                                 link-dark
+                                 "
+                                 >
+                                 <img
+                                    src="static/ads.jpg"
+                                    alt="ads"
+                                    style="width: 100px; height: 100px; object-fit: cover"
+                                    class="rounded me-3"
+                                    />
+                                 <div>
+                                    <p class="m-0">AI-Interf</p>
+                                    <span class="text-muted fs-7">ai-interf.com</span>
+                                 </div>
+                              </a>
+                           </li>
+                        </div>
+                     </div>
+                     <div
+                        class="
+                        d-none d-xxl-block
+                        h-100
+                        fixed-top
+                        end-0
+                        overflow-hidden
+                        scrollbar
+                        "
+                        style="
+                        max-width: 360px;
+                        width: 100%;
+                        z-index: 4;
+                        padding-top: 56px;
+                        left: initial !important;
+                        "
+                        >
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-----------------------------tab generate----------------------------------->
+      </div>
+      <!-- Add this script to the bottom of your HTML template -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script
+         src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+         crossorigin="anonymous"
+         ></script>
+      <script src="https://cdn.jsdelivr.net/npm/clickboard@2/dist/clickboard.min.js"></script>
+      <script src="static/script.js"></script>
+      <script type="text/javascript">
+         // Get all history items
+            const historyItems = document.querySelectorAll('.history-item');
+         
+            // Add click event listener to each history item
+            historyItems.forEach(item => {
+               item.addEventListener('click', function() {
+                  // Get the content of the clicked history item
+                  const title = this.getAttribute('data-title');
+                  const content = this.getAttribute('data-content');
+                  const cat = this.getAttribute('data-cat');
+         
+                  // Clear previous content
+         
+                  $('#title').html('');
+                  $('#chunksContainer').html('');
+         
+         
+                  // Display the clicked content in the chunksContainer
+                  $('#title').append('<p>' + 'Prompt: ' + title + '</p>');
+                  $('#chunksContainer').append('<p>' + content + '</p>');
+             
+         
+                  // Store the clicked content in the hidden input field
+                  $('#titleInput').val(JSON.stringify([title]));
+                  $('#chunksInput').val(JSON.stringify([content]));
+                  $('#catInput').val(JSON.stringify([cat]))
+               });
+            });
+         
+         
+         
+         
+         const radioButtons = document.querySelectorAll('input[type="radio"]');
+         const form = document.getElementById('myForm');
+         
+         
+         radioButtons.forEach((radio) => {
+           radio.addEventListener('change', () => {
+             submitFormWithAjax();
+           });
+         });
+         
+         
+         
+         function submitFormWithAjax() {
+         
+           const formData = new FormData(form);
+           
+         
+          // Check if the 'post' field has data
+           const post = formData.get('post');
+           if (!post) {
+             displayErrorMessage('Please enter your text.');
+             return;
+           }
+         
+           // Check if a radio button is selected
+           const selection = formData.get('selection');
+           if (!selection) {
+             displayErrorMessage('Please select a prompt.');
+             return;
+           }
+         
+           // Remove any existing error messages
+           removeErrorMessage();
+         
+         
+           $.ajax({
+             url: '/content_process',
+             type: 'POST',
+             data: formData,
+             processData: false,
+             contentType: false,
+             success: function(data) {
+               // Display the chunk data
+               displayChunkData(data.chunks);
+         
+               // Get the selected radio button value
+               const radioValue = formData.get('selection');
+               const post = formData.get('post')
+         
+               // Assign the radio button value to an input field
+               $('#radioInput').val(radioValue);
+               $('#postInput').val(post);
+         
+             },
+             error: function(error) {
+               console.error(error);
+             }
+           });
+         }
+         
+         function displayErrorMessage(message) {
+           const errorContainer = document.getElementById('errorContainer');
+           errorContainer.innerHTML = '<p class="error">' + message + '</p>';
+         }
+         
+         function removeErrorMessage() {
+           const errorContainer = document.getElementById('errorContainer');
+           errorContainer.innerHTML = '';
+         }
+         
+         
+         function displayChunkData(chunks) {
+           // Clear previous content
+           $('#chunksContainer').html('');
+           $('#title').html('');
+         
+           // Display the chunk data in the chunksContainer
+           chunks.forEach(function(chunk) {
+             $('#chunksContainer').append('<p>' + chunk + '</p>');
+           });
+         
+           // Store the chunk data in the hidden input field
+           $('#chunksInput').val(JSON.stringify(chunks));
+         }
+         
+         
+         
+         
+         // Disable form submission on Enter key press
+         document.getElementById("myForm").addEventListener("keydown", function (e) {
+           if (e.key === "Enter") {
+             e.preventDefault();
+           }
+         });
+         
+         
+           document.getElementById("uploadIcon").addEventListener("click", function() {
+             document.getElementById("fileInput").click();
+           });
+         
+         
+         
+                  // popover
+                  var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                  return new bootstrap.Popover(popoverTriggerEl);
+                  });
+                  
+                  // Gender Select
+                  if (window.location.pathname === "/") {
+                  const radioBtn1 = document.querySelector("#flexRadioDefault1");
+                  const radioBtn2 = document.querySelector("#flexRadioDefault2");
+                  const radioBtn3 = document.querySelector("#flexRadioDefault3");
+                  const genderSelect = document.querySelector("#genderSelect");
+                  
+                  radioBtn1.addEventListener("change", () => {
+                  genderSelect.classList.add("d-none");
+                  });
+                  radioBtn2.addEventListener("change", () => {
+                  genderSelect.classList.add("d-none");
+                  });
+                  radioBtn3.addEventListener("change", () => {
+                  genderSelect.classList.remove("d-none");
+                  });
+                  }
+                  
+                  
+                  
+                  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                  })
+         
+         function likePost(event, postId) {
+         event.preventDefault();
+         
+         $.ajax({
+         url: "/like_post/" + postId,
+         type: "GET",
+         success: function(response) {
+         if (response && response.like_count !== undefined) {
+           var likeCount = response.like_count;
+           var likeCountElement = document.getElementById("like-count-" + postId);
+           if (likeCountElement) {
+             likeCountElement.innerText = likeCount;
+           }
+         }
+         },
+         error: function(error) {
+         // Handle the error response if needed
+         }
+         });
+         }
+         
+         
+         
+                 function trophyPost(event, postId) {
+                   event.preventDefault();
+         
+         
+                   
+                   $.ajax({
+                     url: "/trophy_post/" + postId,
+                     type: "GET",
+                     success: function(response) {
+         
+         
+                             if (response && response.trophy_count !== undefined) {
+             // Handle the success response
+           var trophyCount = response.trophy_count;
+         
+         
+           
+           // Update the trophy count on the page
+           var trophyCountElement = document.getElementById("trophy-count-" + postId);
+           if (trophyCountElement) {
+             trophyCountElement.innerText = trophyCount;
+           }
+         
+              // Check if the trophy count is 1 and the user who clicked it
+           if (trophyCount === 1) {
+             // Show the prompt data
+             document.getElementById("prompt-" + postId).style.display = "block";
+             document.getElementById("content-" + postId).style.display = "none";
+           } else {
+             // Show the content data
+             document.getElementById("prompt-" + postId).style.display = "none";
+             document.getElementById("content-" + postId).style.display = "block";
+           }
+         }
+         },     
+               
+                     error: function(error) {
+                       // Handle the error response if needed
+         
+                     }
+                   });
+                 }
+                  
+                  
+                   function copyData() {
+                        // Get the data to copy
+                        var data = '';
+                        var chunkElements = document.getElementsByName('chunk');
+                        for (var i = 0; i < chunkElements.length; i++) {
+                            data += chunkElements[i].value + '\n';
+                        }
+                  
+                        // Create a temporary textarea element to hold the data
+                        var tempTextarea = document.createElement('textarea');
+                        tempTextarea.value = data;
+                  
+                        // Append the textarea to the document body
+                        document.body.appendChild(tempTextarea);
+                  
+                        // Copy the data from the textarea
+                        tempTextarea.select();
+                        document.execCommand('copy');
+                  
+                        // Remove the temporary textarea
+                        document.body.removeChild(tempTextarea);
+                  
+                        // Show a success message or perform any other desired action
+                        alert('Data copied to clipboard!');
+                    }
+                  
+                  
+                  
+                  
+               
+      </script>
+   </body>
+</html>

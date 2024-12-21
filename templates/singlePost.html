@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{feed.title}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="h-[78px] bg-[#1f2029] w-full flex items-center justify-between shadow-2xl text-white p-4">
+        <a href="/">
+            <img src="/static/logo.png" alt="Prompt2Share" class="h-[46px] w-[46px]">
+        </a>
+        {% if not user %}
+            <a href="/" class="py-2 px-6 rounded-lg bg-white/10">Login</a>
+        {% endif %}
+    </div>
+    <div class="xl:w-[1000px] xl:mx-auto xl:mb-24 flex justify-center items-start">
+        <div id="post" class="xl:w-2/3 mx-2 mt-10 rounded-lg shadow-2xl bg-white/10 text-white">
+            <div class="p-4 px-6">
+                <div class="w-full h-full flex gap-x-3 mt-4">
+                    <div class="h-14 w-14 rounded-full bg-black overflow-hidden">
+                        {% if not feed.user.profile %}
+                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="w-full h-full rounded-full">
+                        {% else %}
+                        <img src="{{feed.user.profile}}" alt="" class="w-full h-full rounded-full">
+                        {% endif %}
+                    </div>
+                    <div class="">
+                        <span class="text-lg text-white font-bold block">{{feed.user.name}}</span>
+                        <h1 class="text-base text-slate-300">{{feed.created_at}}</h1>
+                    </div>
+                </div>
+                {% if feed.is_liked or feed.is_trophy %}
+                <div class="w-full h-full mt-6">
+                    <p class="text-white"><strong>Prompt:</strong> {{feed.title}}</p>
+                </div>
+                {% endif %}
+                <div class="w-full h-full mt-6">
+                    {% if feed.file %}
+                    {% if feed.file.endswith('.mp4') %}
+                    <center>
+                        <video controls="controls" preload="preload" class="img-fluid rounded" style="width: 100%;">
+                            <source src="{{ feed.file }}#t=0.001" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </center>
+                    {% else %}
+                    <img src="{{ feed.file }}" alt="post image" class="img-fluid rounded img-upload"
+                        style="width: 100%">
+                    {% endif %}
+                    {% endif %}
+                    {% if feed.chunk %}
+                    <p class="text-white">{{feed.chunk | safe}}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="w-full h-full mt-6 flex border-t border-b border-slate-600">
+                <div class="w-1/2 border-r border-slate-600 text-center py-3">
+                    <i class="fas fa-medal fa-lg"></i> <span class="text-lg">{{feed.likes}}</span>
+                </div>
+                <div class="w-1/2 border-t border-slate-600 text-center py-3">
+                    <i class="fas fa-trophy fa-lg"></i> <span class="text-lg">{{feed.trophy}}</span>
+                </div>
+            </div>
+            <div class="w-full h-full p-4">
+                <span class="text-lg font-semibold">Comments</span>
+                <div id="comments" class="">
+                    {% if user %}
+                    <div class="bg-white/10 p-2 rounded-lg flex items-center gap-x-4 my-2 mb-7">
+                        <div class="h-10 w-10 rounded-full bg-black overflow-hidden">
+                            {% if not user.profile %}
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="w-full h-full rounded-full">
+                            {% else %}
+                            <img src="{{user.profile}}" alt="" class="w-full h-full rounded-full">
+                            {% endif %}
+                        </div>
+                        <div class="w-4/5 ">
+                            <input type="text" name="comment" id="comment" placeholder="Write a comment"
+                                class="w-full bg-transparent outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="border py-1 px-4 rounded-2xl">Post</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% for comment in comments %}
+                    <div class="bg-white/10 p-2 rounded-lg flex items-center gap-x-4 my-2">
+                        <div class="h-10 w-10 rounded-full bg-black overflow-hidden">
+                            {% if not comment.profile %}
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="w-full h-full rounded-full">
+                            {% else %}
+                            <img src="{{comment.profile}}" alt="" class="w-full h-full rounded-full">
+                            {% endif %}
+                        </div>
+                        <div>
+                            <span class="font-bold block">{{comment.name}}</span>
+                            <span>{{comment.text}}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+<style>
+    body {
+        background: radial-gradient(circle, rgba(24, 32, 39, 1) 33%, rgba(36, 25, 40, 1) 54%);
+    }
+</style>

@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+  <!-- main style -->
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="stylesheet" href="static/feed.css">
+  <title>Purchase Token</title>
+
+</head>
+
+<body>
+
+  <!-- ================= Appbar ================= -->
+  <div class="d-flex align-items-center fixed-top shadow"
+    style="min-height: 30px; z-index: 5; background-color: #1f2029;">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <!-- search -->
+        <div class="col align-items-center mt-2 nav-search">
+          <form class="d-none d-md-flex align-items-center">
+            <div class="input-group">
+              <input type="text" class="form-control border-0" id="myInput" onkeyup="myFunction()" placeholder="Search">
+              <ul id="myUL" style="display: none;"></ul>
+              <!--          <button type="submit" class="input-group-text border-0" style="background-color: rgba(225, 225, 225, 0.1);">
+                    <i class="fa-solid fa-magnifying-glass text-white"></i>
+                </button> -->
+            </div>
+          </form>
+
+          <ul class="col justify-content-start text-left d-flex d-md-none"
+            style="list-style: none; padding-left: -10px!important; margin-left: -10px!important;">
+            <li class="col-4">
+              <i class="fas fa-solid fa-medal text-white"><span style="padding-left: 5px">{{total_likes}}</span></i>
+            </li>
+
+            <li class="col-4">
+              <i class="fas fa-solid fa-trophy text-white"><span style="padding-left: 5px">{{total_trophies}}</span></i>
+            </li>
+          </ul>
+
+        </div>
+
+
+        <!-- nav -->
+        <div class="col d-none d-md-flex justify-content-center" id="top-tab">
+
+          <ul class="d-flex justify-content-between text-center pt-3" style="list-style: none">
+            <li class="col-6 px-4">
+              <i class="fas fa-solid fa-medal text-white"><span style="padding-left: 5px">{{total_likes}}</span></i>
+              <p>Reward</p>
+            </li>
+            <li class="col-6 px-4">
+              <i class="fas fa-solid fa-trophy text-white"><span style="padding-left: 5px">{{total_trophies}}</span></i>
+              <p>Trophy</p>
+            </li>
+          </ul>
+
+
+
+        </div>
+
+
+
+        <!-- menus -->
+        <div class="col d-flex align-items-center justify-content-end my-3 my-md-0">
+          <i class="fas fa-search" class="openBtn" onclick="openSearch()"></i>
+
+          <!-- avatar -->
+          <!-- <div class="align-items-center justify-content-center d-none d-xl-flex">
+          <img src="https://source.unsplash.com/collection/happy-people" class="rounded-circle me-2" alt="avatar" style="width: 38px; height: 38px; object-fit: cover" />
+          <p class="m-0">{{ session['name']}} </a></p>
+        </div> -->
+          <!-- main menu -->
+          <!-- notifications -->
+          <div class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2 notify"
+            style="width: 38px; height: 38px" type="button" id="notMenu" data-bs-toggle="dropdown" aria-expanded="false"
+            data-bs-auto-close="outside">
+            <i class="fas fa-bell"><span>{{notification_count}}</span></i>
+          </div>
+          <!-- notifications dd -->
+          <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="notMenu"
+            style="width: 100%; max-width: 23em; max-height: 400px; overflow-y: auto;">
+            <!-- header -->
+            <li class="p-1">
+              <div class="d-flex justify-content-between">
+                <h2 class="text-white">Notifications</h2>
+              </div>
+            </li>
+            <!-- news 5 -->
+            <li class="my-2 p-1">
+              <a href="#" class="d-flex align-items-center justify-content-evenly text-decoration-none text-white">
+                <div class="d-flex align-items-center justify-content-evenly">
+                  <div>
+                    {% for notification in notifications %}
+                    <a
+                      href="{{ url_for('mark_notification_as_read', notification_id=notification.id, redirect = 'tokenbuy') }}">
+                      <div class="d-flex align-items-center">
+                        <div class="p-2">
+                          {% if notification.profile %}
+                          <img src="{{ notification.profile }}" alt="avatar" class="rounded-circle"
+                            style="width: 58px; height: 58px; object-fit: cover" />
+                          {% else %}
+                          <img src="https://source.unsplash.com/random/5" alt="avatar" class="rounded-circle"
+                            style="width: 58px; height: 58px; object-fit: cover" />
+                          {% endif %}
+                        </div>
+                        <div>
+                          {% if notification.is_read == '1' %}
+                          <div class="read">
+                            <p class="m-0">{{ notification.message }}</p>
+                            <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                          </div>
+                          {% else %}
+                          <div>
+                            <p class="m-0">{{ notification.message }}</p>
+                            <span class="fs-7 text-primary">{{ notification.created_at }}</span>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </a>
+                    <hr>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+          <!-- secondary menu -->
+          <div class="rounded-circle p-1 right-menu-icon d-flex align-items-center justify-content-center mx-2"
+            style="width: 38px; height: 38px" type="button" id="secondMenu" data-bs-toggle="dropdown"
+            aria-expanded="false" data-bs-auto-close="outside">
+            <i class="fas fa-caret-down"></i>
+          </div>
+          <!-- secondary menu dd -->
+          <ul class="burger-menu-content dropdown-menu border-0 shadow p-3" aria-labelledby="secondMenu"
+            style="width: 100%; max-width: 23em;">
+            <!-- avatar -->
+            <li class="dropdown-item p-1 rounded d-flex" type="button">
+              {% if user.profile %}
+              <img src="{{ user.profile }}" alt="avatar" class="rounded-circle me-2"
+                style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+              {% else %}
+              <img src="https://source.unsplash.com/collection/happy-people" alt="avatar" class="rounded-circle me-2"
+                style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;" />
+              {% endif %}
+
+              <div>
+                <a href="profile/{{ session['user_id']}}">
+                  <p class="m-0">{{ session['name']}} </p>
+                </a>
+                <a href="profile/{{ session['user_id']}}">
+                  <p class="m-0 text-muted">See your profile</p>
+                </a>
+              </div>
+            </li>
+            <hr />
+            <!-- feedback fas fa-exclamation-circle -->
+            {% if session['user_id'] == 1 %}
+            <a href="/ai-interf-social-admin">
+              <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                <i class="fa fa-pen text-white p-2 rounded-circle"></i>
+                <div class="ms-3">
+                  <p class="m-0">Admin</p>
+                </div>
+              </li>
+            </a>
+            {% endif %}
+
+            <a href="/feed">
+              <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                <i class="fa fa-home text-white p-2 rounded-circle"></i>
+                <div class="ms-3">
+                  <p class="m-0">Home</p>
+
+                </div>
+              </li>
+            </a>
+            <div class="show-mobile">
+              <a href="/followed_users">
+                <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                  <i class="fa fa-users text-white p-2 rounded-circle"></i>
+                  <div class="ms-3">
+                    <p class="m-0">Circle</p>
+                    <p class="m-0 text-muted fs-7">Check who you have followed</p>
+                  </div>
+                </li>
+              </a>
+              <a href="/tokenbuy">
+                <li class="dropdown-item p-1 rounded d-flex align-items-center" type="button">
+                  <i class="fa fa-coins text-white p-2 rounded-circle"></i>
+                  <div class="ms-3">
+                    <p class="m-0">Purchase Coin</p>
+                    <p class="m-0 text-muted fs-7">Buy token to give rewards</p>
+                  </div>
+                </li>
+              </a>
+              <hr />
+            </div>
+            <!-- options -->
+            <li class="dropdown-item p-1 my-3 rounded" type="button">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a href="{{ url_for('logout')}}" class="d-flex text-decoration-none text-white">
+                    <i class="fas fa-cog p-2 rounded-circle"></i>
+                    <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                      <p class="m-0">Log Out</p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <!-- end -->
+        </div>
+      </div><!-----end row----->
+
+      <div id="myOverlay" class="overlay">
+        <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
+        <div class="overlay-content">
+          <form class="d-flex align-items-center">
+            <div class="input-group">
+              <input type="text" class="form-control border-0" id="userSearch" onkeyup="filterUserButtons()"
+                placeholder="Search">
+            </div>
+          </form>
+
+          <ul class="user-input">
+            {% for u in users %}
+            <li class="user">
+              {% if user.profile %}
+              <img src="{{ user.profile }}" alt="Profile Picture" class="rounded-circle" width="50" height="50">
+
+              {% else %}
+              <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle"
+                width="50" height="50">
+              {% endif %}
+              <span>{{ u.name}}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+  <div class="container mt-5" style="height: 100vh; padding-top: 50px;">
+
+    <div class="col-12 text-center my-5 pt-5 pt-md-0">
+      <h1 class="text-white"> Purchase your token here</h1>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-5 col-12">
+
+        <form action="/create-checkout-session" method="POST">
+
+
+
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <input type="hidden" name="user_id" id='user_id' value="{{ session['user_id'] }}" />
+
+
+          <label class="price text-center">
+            <i class="fas fa-dollar-sign" style="color: #fff;"></i><input type="text" name="price" id="price" value="1"
+              class="input" pattern="\d+" title="Please enter a whole number." placeholder="Enter your price here.."
+              required oninput="validateInput(this)">
+          </label>
+
+
+          <div class="qty">
+            <p id="qty"><i class="fas fa-solid fa-medal"></i> 96</p>
+          </div>
+          
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">Purchase</button>
+          </div>
+
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Optional JavaScript; choose one of the two! -->
+  <!-- Add this script to the bottom of your HTML template -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=ARbTKVsWW3hI3Rq1rsU5ws85EWiVNnlvt4pnx9OUgBzyxFx4rSzHSOHnk4vMfJ0PCthxNdNfpVgGFJqI&currency=USD"></script>
+
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="static/script.js"></script>
+
+  <script type="text/javascript">
+
+
+    $('#price').on('input', function () {
+      var price = parseFloat($(this).val());
+      var maxQty = 100;
+
+
+      if (isNaN(price) || price <= 0) { // Check if input is NaN or non-positive
+        $('#qty').html('<i class="fas fa-solid fa-medal"></i> 0');
+        return;
+      }
+
+      // Check if the input value exceeds the maximum limit
+      if (price > maxQty) {
+        // If it exceeds, set the value to the maximum limit
+        $(this).val(maxQty);
+        price = maxQty;
+      }
+
+      var qty = price * 96;
+      $('#qty').html('<i class="fas fa-solid fa-medal"></i>' + qty.toFixed(0));
+    });
+
+
+    function validateInput(input) {
+      // Remove any non-numeric characters and decimal points
+      input.value = input.value.replace(/[^\d]/g, '');
+    }
+
+
+    paypal.Buttons({
+
+      // Sets up the transaction when a payment button is clicked
+      createOrder: function (data, actions) {
+        var price = document.getElementById("price").value;
+
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: price
+            },
+          }],
+
+          application_context: {
+            shipping_preference: "NO_SHIPPING" // This line removes the shipping address step
+          }
+
+
+        });
+      },
+
+      // Finalize the transaction after payer approval
+      onApprove: function (data, actions) {
+        return actions.order.capture().then(function (orderData) {
+
+          var transaction = orderData.purchase_units[0].payments.captures[0];
+
+          var user_id = document.getElementById("user_id").value;
+          var price = document.getElementById("price").value;
+          var qty = document.getElementById("qty").value;
+
+          var csrf_token = "{{ csrf_token() }}";
+
+          $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+          });
+
+          $.ajax({
+            url: "/token_payment",
+            method: "POST",
+            data: {
+              user_id: $('#user_id').val(),
+              price: $('#price').val(),
+              qty: $('#qty').val(),
+
+
+            },
+            success: function (response) {
+
+              swal('', response.status, 'success')
+                .then((value) => {
+                  window.location.href = '/order';
+                });
+
+            }
+          });
+
+        });
+      }
+    }).render('#paypal-button-container');
+
+    // function to show search data top-nav bar
+    function myFunction() {
+      var input, filter, ul, li, a, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      ul = document.getElementById("myUL");
+
+      // Show or hide the list based on whether there is any input
+      if (filter.trim() === '') {
+        ul.style.display = "none";
+        return;
+      } else {
+        ul.style.display = "block";
+      }
+
+      // Make an API call to your Flask app
+      fetch(`/api/users?q=${filter}`)
+        .then(response => response.json())
+        .then(data => {
+          // Update the list of names with the API response
+          ul.innerHTML = '';
+          data.forEach(user => {
+            ul.innerHTML += `<li><a href="/profile/${user.user_id}">${user.name}</a></li>`;
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+
+  </script>
+
+  <style>
+    #zoid-paypal-buttons-uid_5e1b7295fe_mdq6mjg6mtu>iframe.component-frame {
+      z-index: 0;
+    }
+  </style>
+
+</body>
+
+</html>
